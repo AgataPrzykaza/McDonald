@@ -14,6 +14,7 @@ struct RegisterRegionView: View {
    
     var body: some View {
         
+       
         VStack {
             Image("worldIcon")
                 .resizable()

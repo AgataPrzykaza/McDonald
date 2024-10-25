@@ -15,101 +15,42 @@ struct LoginView: View {
         
         VStack{
             
-            HStack(spacing: 10){
-                
-                Text("Produkty, nagrody, okazYEAH!")
-                    .font(.title)
-                    .bold()
-                    .padding(.horizontal)
-                
-                Rectangle()
-                    .frame(height: 50)
-                
-                
-            }
-            .padding(10)
-            .padding(.top,50)
+            baner
             
+            
+            emailField
+            
+            
+            passwordField
             
             VStack(alignment: .leading){
-                Text("E-mail")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
-                    .padding(.horizontal)
                 
-                TextField("", text: .constant(""))
-                    .frame(height: 50)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 5)
-                            .stroke(Color.gray, lineWidth: 1)
-                        
-                    )
-                    .padding(.horizontal)
-                
-                
-            }
-            
-            
-            VStack(alignment: .leading){
-                Text("Hasło")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
-                    .padding(.horizontal)
-                
-                ZStack{
-                    SecureField("Enter Text", text:.constant(""))
-                        .frame(height: 50)
-                        .textInputAutocapitalization(.never)
-                        .keyboardType(.asciiCapable)
-                        .autocorrectionDisabled(true)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.gray, lineWidth: 1)
-                            
-                        )
-                        .padding(.horizontal)
-                        .opacity(hidePasswordFieldOpacity ?  1 : 0)
-                    
-                    
-                    TextField("", text: .constant(""))
-                        .frame(height: 50)
-                        .textInputAutocapitalization(.never)
-                        .keyboardType(.asciiCapable)
-                        .autocorrectionDisabled(true)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.gray, lineWidth: 1)
-                            
-                        )
-                        .padding(.horizontal)
-                        .opacity(hidePasswordFieldOpacity ?  0 : 1)
-                    
-                    Button(action: {
-                        hidePasswordFieldOpacity.toggle()
-                    }, label: {
-                        Image(systemName: hidePasswordFieldOpacity ? "eye" : "eye.slash" )
-                            .accentColor(.gray)
-                    })
-                    .frame(maxWidth: .infinity,alignment: .bottomTrailing)
-                    .padding(.trailing,20)
-                    
+                NavigationLink {
+                    Text("reset hasła")
+                } label: {
+                    Text("Nie pamiętasz hasła ?")
+                        .underline(color: .blue)
+                        .foregroundStyle(.blue)
+                        .frame(maxWidth: .infinity,alignment: .leading)
+                        .padding(.bottom,30)
                 }
-            }
-            
-            VStack(alignment: .leading){
-                Text("Nie pamiętasz hasła ?")
-                    .underline(color: .blue)
-                    .foregroundStyle(.blue)
-                    .frame(maxWidth: .infinity,alignment: .leading)
-                    .padding(.bottom,30)
+
+                
+                
                 
                 HStack{
                     Text("Nie masz jeszcze konta ?")
                     
-                    Text("Załóż teraz!")
-                        .underline(color: .blue)
-                        .foregroundStyle(.blue)
-                        .padding(.horizontal,20)
+                    NavigationLink {
+                        Text("zaloz konto")
+                    } label: {
+                        Text("Załóż teraz!")
+                            .underline(color: .blue)
+                            .foregroundStyle(.blue)
+                            .padding(.horizontal,20)
+                    }
+
+                
                 }
                 
             }
@@ -141,6 +82,96 @@ struct LoginView: View {
     }
 }
 
+extension LoginView {
+    var baner: some View {
+        HStack(spacing: 10){
+            
+            Text("Produkty, nagrody, okazYEAH!")
+                .font(.title)
+                .bold()
+                .padding(.horizontal)
+            
+            Rectangle()
+                .frame(height: 50)
+            
+            
+        }
+        .padding(10)
+        .padding(.top,50)
+    }
+    
+    var emailField: some View {
+        VStack(alignment: .leading){
+            Text("E-mail")
+                .font(.caption)
+                .foregroundStyle(.gray)
+                .padding(.horizontal)
+            
+            TextField("", text: .constant(""))
+                .frame(height: 50)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(Color.gray, lineWidth: 1)
+                    
+                )
+                .padding(.horizontal)
+            
+            
+        }
+    }
+    
+    var passwordField: some View {
+        VStack(alignment: .leading){
+            Text("Hasło")
+                .font(.caption)
+                .foregroundStyle(.gray)
+                .padding(.horizontal)
+            
+            ZStack{
+                SecureField("Enter Text", text:.constant(""))
+                    .frame(height: 50)
+                    .textInputAutocapitalization(.never)
+                    .keyboardType(.asciiCapable)
+                    .autocorrectionDisabled(true)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.gray, lineWidth: 1)
+                        
+                    )
+                    .padding(.horizontal)
+                    .opacity(hidePasswordFieldOpacity ?  1 : 0)
+                
+                
+                TextField("", text: .constant(""))
+                    .frame(height: 50)
+                    .textInputAutocapitalization(.never)
+                    .keyboardType(.asciiCapable)
+                    .autocorrectionDisabled(true)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.gray, lineWidth: 1)
+                        
+                    )
+                    .padding(.horizontal)
+                    .opacity(hidePasswordFieldOpacity ?  0 : 1)
+                
+                Button(action: {
+                    hidePasswordFieldOpacity.toggle()
+                }, label: {
+                    Image(systemName: hidePasswordFieldOpacity ? "eye" : "eye.slash" )
+                        .accentColor(.gray)
+                })
+                .frame(maxWidth: .infinity,alignment: .bottomTrailing)
+                .padding(.trailing,20)
+                
+            }
+        }
+    }
+}
+
 #Preview {
-    LoginView()
+    NavigationStack {
+        LoginView()
+    }
+    
 }
