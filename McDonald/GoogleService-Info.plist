@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyBrCcBA16GTN7nVsJOkksYIrhXdohLP6nM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>686119290984</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.aprz.McDonald</string>
+	<key>PROJECT_ID</key>
+	<string>macdonald-9d1df</string>
+	<key>STORAGE_BUCKET</key>
+	<string>macdonald-9d1df.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:686119290984:ios:48a287623ac2de39b493dd</string>
+</dict>
+</plist>
