@@ -12,6 +12,32 @@ class FirestoreService {
     
     let db = Firestore.firestore()
     
+    
+    func fetchMainPromosFromFirestore() async -> [Promo] {
+        var promos: [Promo] = []
+        
+        do {
+          let querySnapshot = try await db.collection("mainHeaders").getDocuments()
+          for document in querySnapshot.documents {
+            
+              if let promoData = try? document.data(as: Promo.self) {
+                  
+                 
+                  promos.append(promoData)
+              }
+          }
+        } catch {
+          print("Error getting promos: \(error)")
+        }
+        
+        return promos
+        
+        
+    }
+    
+    
+
+    
     func fetchImagesFromFirebaseStorage() async -> [URL] {
         var imageURLs: [URL] = []
         

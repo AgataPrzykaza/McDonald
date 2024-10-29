@@ -1,22 +1,22 @@
 //
-//  LocationPermisionView.swift
+//  NotificationPermissoinView.swift
 //  McDonald
 //
-//  Created by Agata Przykaza on 25/10/2024.
+//  Created by Agata Przykaza on 28/10/2024.
 //
 
 import SwiftUI
 
-struct LocationPermisionView: View {
-    
+struct NotificationPermissoinView: View {
    
+    
     
     var body: some View {
         
         VStack {
            
            
-                Image(systemName: "mappin.and.ellipse.circle.fill")
+                Image(systemName: "bell.circle.fill")
                     .resizable()
                     .scaledToFit()
                     .frame(height: 150)
@@ -24,19 +24,19 @@ struct LocationPermisionView: View {
                     .padding(.bottom,30)
             
             VStack(alignment: .leading){
-                Text("Daj nam znać, gdzie jesteś:)")
+                Text("Bądź zawsze       na bieżąco!")
                     .fontWeight(.heavy)
                     .font(.title)
                     .padding(.bottom)
                 
-                Text("Dzięki temu będziemy mogli pokazać Ci restauracje w okolicy i wyświetlić Ci oferty z Twojego lokalnego McDonald's")
+                Text("Raz na jakiś czas będziemy wysyłać Ci powiadomienia push, by dać znać o nowych pysznych produktach,aktualnych promocjach i najlepszych ofertach.")
                     .font(.subheadline)
             }
             .padding()
             
             Spacer()
             
-            Text("1/3")
+            Text("2/3")
                 .fontWeight(.heavy)
             
             NavigationLink {
@@ -51,5 +51,5 @@ struct LocationPermisionView: View {
 }
 
 #Preview {
-    LocationPermisionView()
+    NotificationPermissoinView()
 }
