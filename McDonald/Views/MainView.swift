@@ -19,25 +19,25 @@ enum Tabs: Equatable, Hashable, Identifiable {
 
 struct MainView: View {
     
-    @State private var selectedTab: Tabs = .homePage
+    @State  var selectedTab: Tabs = .homePage
     
     var body: some View {
         
         TabView(selection: $selectedTab){
             
             Tab("Main page", systemImage: "house.fill",value: .homePage){
-                HomeView()
+                HomeView(selectionTab: $selectedTab)
             }
             
             Tab("MyM",systemImage: "star.fill",value: .myM){
                 MyMView()
             }
             
-            Tab("Order",systemImage: "heart" ,value: .order){
+            Tab("Order",systemImage: "takeoutbag.and.cup.and.straw.fill" ,value: .order){
                 OrderView()
             }
             
-            Tab("McDelivery",systemImage: "heart",value: .mcdelivery){
+            Tab("McDelivery",systemImage: "truck.box.fill",value: .mcdelivery){
                 McDelivery()
             }
             
@@ -49,6 +49,7 @@ struct MainView: View {
                 McDelivery()
             }
         }
+        
     }
 }
 

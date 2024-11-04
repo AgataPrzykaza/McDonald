@@ -10,6 +10,8 @@ import FirebaseStorage
 
 struct PromoSubView: View {
     
+    
+    
     var imagePath: String
     @State private var imageURL: URL?
     
@@ -17,18 +19,22 @@ struct PromoSubView: View {
         AsyncImage(url: imageURL) { image in
             image
                 .resizable()
-                .scaledToFill()
+                .frame(width: UIScreen.main.bounds.width - 50,height: 300)
+                .scaledToFit()
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .clipped()
+                
         } placeholder: {
             Rectangle()
                 .foregroundStyle(.white)
+                .frame(width: UIScreen.main.bounds.width - 50,height: 300)
+                .scaledToFill()
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .clipped()
                 .overlay {
                     ProgressView()
                 }
         }
-        .clipped()
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-        .frame(height: 320)
-        .padding()
         .task {
             await loadImage()
         }
@@ -36,181 +42,200 @@ struct PromoSubView: View {
     
     func loadImage() async {
         do {
-            imageURL = try await fetchImageURL(for: imagePath)
+            imageURL = try await FirestoreService().fetchImageURL(for: imagePath)
         } catch {
             print("Error fetching image URL: \(error)")
         }
     }
     
-    private func fetchImageURL(for imagePath: String) async throws -> URL {
+//    private func fetchImageUR(for imagePath: String) async throws -> URL {
+//        let storageRef = Storage.storage().reference(withPath: imagePath)
+//        let downloadURL = try await storageRef.downloadURL()
+//        return downloadURL
+//    }
+}
+
+
+
+struct HomeView: View {
+    
+    @Binding var selectionTab: Tabs
+    @State var showLoginCard: Bool = true
+    @State  var imageURLs: [URL] = []
+    @State var selectedPromo: Promo?
+    @State var promos: [Promo] = []
+    
+    func fetchImageURL(for imagePath: String) async throws -> URL {
         let storageRef = Storage.storage().reference(withPath: imagePath)
         let downloadURL = try await storageRef.downloadURL()
         return downloadURL
     }
-    }
-    //struct PromoSubView: View {
-    //
-    //    var imageURL: URL?
-    //
-    //
-    //
-    //
-    //
-    //    var body: some View {
-    //
-    //
-    //        AsyncImage(url: imageURL) { image in
-    //            image
-    //                .resizable()
-    //                .scaledToFill()
-    //
-    //        } placeholder: {
-    //            Rectangle()
-    //                .foregroundStyle(.white)
-    //                .overlay {
-    //                    ProgressView()
-    //                }
-    //
-    //        }
-    //        .clipped()
-    //        .clipShape(RoundedRectangle(cornerRadius: 10))
-    //        .frame(height: 320)
-    //        .padding()
-    //
-    //    }
-    //}
     
-    
-    struct HomeView: View {
+    func whereToGo(promo: Promo) {
         
-        @State var showLoginCard: Bool = true
-        @State  var imageURLs: [URL] = []
         
-        @State var promos: [Promo] = []
         
-        func fetchImageURL(for imagePath: String) async throws -> URL {
-            let storageRef = Storage.storage().reference(withPath: imagePath)
-            let downloadURL = try await storageRef.downloadURL()
-            return downloadURL
+        if promo.type == "link"{
+            
+            switch promo.title {
+            case "delivery":
+                selectionTab = .mcdelivery
+                
+            case "okazyeah":
+                selectionTab = .myM
+                
+            case "takeout":
+                selectionTab = .order
+                
+            default:
+                selectionTab = .homePage
+            }
+        }
+        else{
+            
+            selectedPromo = promo
         }
         
-        var body: some View {
+        
+    }
+    
+    var body: some View {
+        
+        NavigationStack{
             
-            NavigationStack{
+            
+            
+            ScrollView{
                 
-                
-                
-                ScrollView{
-                    
-                    if showLoginCard == true{
-                        loginCard
-                    }
-                    
-                    
-                    LazyVStack {
-                        ForEach(promos, id: \.self) { promo in
-                            PromoSubView(imagePath: promo.imagePath)
-                                .shadow(color: .gray,radius: 4,y: 5)
-                        }
-                    }
-                    
-                    
-                    
-                    
-                    
+                if showLoginCard == true{
+                    loginCard
                 }
-                .onAppear{
-                    Task {
-                        imageURLs = await FirestoreService().fetchImagesFromFirebaseStorage()
-                        promos = await FirestoreService().fetchMainPromosFromFirestore()
+                
+                
+                LazyVStack {
+                    ForEach(promos, id: \.self) { promo in
                         
-                       
+                        
+                        PromoSubView(imagePath: promo.imagePath)
+                            .shadow(color: .gray,radius: 4,y: 5)
+                            .padding(.bottom,20)
+                            .onTapGesture{
+                                whereToGo(promo: promo)
+                            }
+                        
+                        
+                        
+                        
                     }
+                }
+                
+                
+                
+                
+                
+            }
+            .navigationDestination(isPresented: Binding<Bool>(
+                get: { selectedPromo != nil },
+                set: { if !$0 { selectedPromo = nil } }
+            ), destination: {
+                if let promo = selectedPromo {
+                    PromoView(promo: promo)
+                        .navigationTitle("Spróbuj \(promo.title) !")
+                }
+                
+            })
+            .onAppear{
+                Task {
+                    imageURLs = await FirestoreService().fetchImagesFromFirebaseStorage()
+                    promos = await FirestoreService().fetchMainPromosFromFirestore()
                     
                     
                 }
                 
                 
             }
+            
+            
         }
-        
-        
-        
-        
-        
     }
     
-    extension HomeView{
+    
+    
+    
+    
+}
+
+extension HomeView{
+    
+    
+    
+    var loginCard: some View{
         
-        
-        
-        var loginCard: some View{
+        ZStack{
+            Rectangle()
+                .foregroundStyle(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(height: 250)
+                .shadow(color: .gray,radius: 4,y: 5)
+                .padding()
             
-            ZStack{
-                Rectangle()
-                    .foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .frame(height: 250)
-                    .shadow(color: .gray,radius: 4,y: 5)
-                    .padding()
-                
-                
-                
-                
-                
-                HStack{
-                    VStack(alignment:.leading){
-                        Text("Hej! Chyba nie jesteś zalogowany.")
-                            .fontWeight(.heavy)
-                            .font(.title2)
-                        Text("Najlepsze znajdziesz po zalogowaniu ☺️")
-                            .font(.subheadline)
-                            .padding(.bottom)
-                        
-                        
-                        
-                        Text("Zaloguj się")
-                            .foregroundStyle(.black)
-                            .frame(width: 150,height: 40)
-                            .background(.yellow,in: .rect(cornerRadius: 5))
-                        
-                        
-                        
-                    }
-                    .padding()
+            
+            
+            
+            
+            HStack{
+                VStack(alignment:.leading){
+                    Text("Hej! Chyba nie jesteś zalogowany.")
+                        .fontWeight(.heavy)
+                        .font(.title2)
+                    Text("Najlepsze znajdziesz po zalogowaniu ☺️")
+                        .font(.subheadline)
+                        .padding(.bottom)
                     
-                    VStack{
-                        
-                        
-                        Rectangle()
-                            .frame(height: 120)
-                            .padding()
-                        
-                        
-                    }
+                    
+                    
+                    Text("Zaloguj się")
+                        .foregroundStyle(.black)
+                        .frame(width: 150,height: 40)
+                        .background(.yellow,in: .rect(cornerRadius: 5))
+                    
+                    
                     
                 }
                 .padding()
                 
-                
-                
-            }
-            .overlay(alignment: .topTrailing) {
-                Button {
-                    showLoginCard.toggle()
-                } label: {
-                    Image(systemName: "xmark")
-                        .foregroundStyle(.black)
+                VStack{
+                    
+                    
+                    Rectangle()
+                        .frame(height: 120)
+                        .padding()
+                    
+                    
                 }
-                .padding(30)
+                
             }
+            .padding()
             
+            
+            
+        }
+        .overlay(alignment: .topTrailing) {
+            Button {
+                showLoginCard.toggle()
+            } label: {
+                Image(systemName: "xmark")
+                    .foregroundStyle(.black)
+            }
+            .padding(30)
         }
         
     }
     
-    
-    
-    #Preview {
-        HomeView()
-    }
+}
+
+
+
+#Preview {
+    HomeView(selectionTab: .constant(Tabs.homePage))
+}

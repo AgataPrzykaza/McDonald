@@ -13,6 +13,19 @@ class FirestoreService {
     let db = Firestore.firestore()
     
     
+    func fetchPromoDetailsFromFirestore(for promoID: String) async -> PromoDetails? {
+        
+        do{
+            let document = try await db.collection("promoDetails").document(promoID).getDocument()
+            return try document.data(as: PromoDetails.self)
+        }
+        catch{
+            print("Error getting promo details: \(error)")
+        }
+        
+        return nil
+    }
+    
     func fetchMainPromosFromFirestore() async -> [Promo] {
         var promos: [Promo] = []
         
@@ -35,6 +48,11 @@ class FirestoreService {
         
     }
     
+    func fetchImageURL(for imagePath: String) async throws -> URL {
+        let storageRef = Storage.storage().reference(withPath: imagePath)
+        let downloadURL = try await storageRef.downloadURL()
+        return downloadURL
+    }
     
 
     
