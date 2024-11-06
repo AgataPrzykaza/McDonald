@@ -8,68 +8,14 @@
 import SwiftUI
 import FirebaseStorage
 
-struct PromoSubView: View {
-    
-    
-    
-    var imagePath: String
-    @State private var imageURL: URL?
-    
-    var body: some View {
-        AsyncImage(url: imageURL) { image in
-            image
-                .resizable()
-                .frame(width: UIScreen.main.bounds.width - 50,height: 300)
-                .scaledToFit()
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .clipped()
-                
-        } placeholder: {
-            Rectangle()
-                .foregroundStyle(.white)
-                .frame(width: UIScreen.main.bounds.width - 50,height: 300)
-                .scaledToFill()
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .clipped()
-                .overlay {
-                    ProgressView()
-                }
-        }
-        .task {
-            await loadImage()
-        }
-    }
-    
-    func loadImage() async {
-        do {
-            imageURL = try await FirestoreService().fetchImageURL(for: imagePath)
-        } catch {
-            print("Error fetching image URL: \(error)")
-        }
-    }
-    
-
-}
-
-
 
 struct HomeView: View {
     
     @Binding var selectionTab: Tabs
-    @State var showLoginCard: Bool = true
-    @State  var imageURLs: [URL] = []
-    @State var selectedPromo: Promo?
-    @State var promos: [Promo] = []
+    @State var homeViewModel: HomeViewViewModel = .init()
     
-    func fetchImageURL(for imagePath: String) async throws -> URL {
-        let storageRef = Storage.storage().reference(withPath: imagePath)
-        let downloadURL = try await storageRef.downloadURL()
-        return downloadURL
-    }
-    
+ 
     func whereToGo(promo: Promo) {
-        
-        
         
         if promo.type == "link"{
             
@@ -89,7 +35,7 @@ struct HomeView: View {
         }
         else{
             
-            selectedPromo = promo
+            homeViewModel.selectedPromo = promo
         }
         
         
@@ -103,13 +49,13 @@ struct HomeView: View {
             
             ScrollView{
                 
-                if showLoginCard == true{
+                if homeViewModel.showLoginCard == true{
                     loginCard
                 }
                 
                 
                 LazyVStack {
-                    ForEach(promos, id: \.self) { promo in
+                    ForEach(homeViewModel.promos, id: \.self) { promo in
                         
                         
                         PromoSubView(imagePath: promo.imagePath)
@@ -134,10 +80,10 @@ struct HomeView: View {
                 
             }
             .navigationDestination(isPresented: Binding<Bool>(
-                get: { selectedPromo != nil },
-                set: { if !$0 { selectedPromo = nil } }
+                get: { homeViewModel.selectedPromo != nil },
+                set: { if !$0 { homeViewModel.selectedPromo = nil } }
             ), destination: {
-                if let promo = selectedPromo {
+                if let promo = homeViewModel.selectedPromo {
                     PromoView(promo: promo, selectionTab: $selectionTab)
                         
                 }
@@ -145,8 +91,8 @@ struct HomeView: View {
             })
             .onAppear{
                 Task {
-                    imageURLs = await FirestoreService().fetchImagesFromFirebaseStorage()
-                    promos = await FirestoreService().fetchMainPromosFromFirestore()
+                    homeViewModel.imageURLs = await FirestoreService().fetchImagesFromFirebaseStorage()
+                    homeViewModel.promos = await FirestoreService().fetchMainPromosFromFirestore()
                     
                     
                 }
@@ -221,7 +167,7 @@ extension HomeView{
         }
         .overlay(alignment: .topTrailing) {
             Button {
-                showLoginCard.toggle()
+                homeViewModel.showLoginCard.toggle()
             } label: {
                 Image(systemName: "xmark")
                     .foregroundStyle(.black)
@@ -229,6 +175,29 @@ extension HomeView{
             .padding(30)
         }
         
+    }
+    
+    var mainPromo: some View{
+        
+        ZStack{
+//            AsyncImage(url: ){ image in
+//                image
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(minHeight: 300,maxHeight: 800)
+//                    
+//                
+//            }placeholder: {
+//                Rectangle()
+//                    .foregroundStyle(.white)
+//                    .frame(minHeight: 300,maxHeight: 700)
+//                    .scaledToFill()
+//                
+//                    .overlay {
+//                        ProgressView()
+//                    }
+           // }
+        }
     }
     
 }

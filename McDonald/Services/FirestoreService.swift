@@ -26,6 +26,7 @@ class FirestoreService {
         return nil
     }
     
+    
     func fetchMainPromosFromFirestore() async -> [Promo] {
         var promos: [Promo] = []
         

@@ -37,7 +37,7 @@ class MenuItemFactory {
 
 struct ContentView: View {
     
-    @Environment(ViewModel.self) private var vmodel
+   
     
     let menuService = FirestoreService()
    @State  var menuItems: [MenuItem] = []
@@ -142,5 +142,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environment(ViewModel())
+        
 }
