@@ -48,11 +48,7 @@ struct PromoSubView: View {
         }
     }
     
-//    private func fetchImageUR(for imagePath: String) async throws -> URL {
-//        let storageRef = Storage.storage().reference(withPath: imagePath)
-//        let downloadURL = try await storageRef.downloadURL()
-//        return downloadURL
-//    }
+
 }
 
 
@@ -120,7 +116,10 @@ struct HomeView: View {
                             .shadow(color: .gray,radius: 4,y: 5)
                             .padding(.bottom,20)
                             .onTapGesture{
-                                whereToGo(promo: promo)
+                                
+                                    whereToGo(promo: promo)
+                                
+                               
                             }
                         
                         
@@ -139,8 +138,8 @@ struct HomeView: View {
                 set: { if !$0 { selectedPromo = nil } }
             ), destination: {
                 if let promo = selectedPromo {
-                    PromoView(promo: promo)
-                        .navigationTitle("Spróbuj \(promo.title) !")
+                    PromoView(promo: promo, selectionTab: $selectionTab)
+                        
                 }
                 
             })
