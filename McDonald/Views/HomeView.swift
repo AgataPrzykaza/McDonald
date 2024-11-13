@@ -49,6 +49,8 @@ struct HomeView: View {
             
             ScrollView{
                 
+                mainPromo
+                
                 if homeViewModel.showLoginCard == true{
                     loginCard
                 }
@@ -93,7 +95,7 @@ struct HomeView: View {
                 Task {
                     homeViewModel.imageURLs = await FirestoreService().fetchImagesFromFirebaseStorage()
                     homeViewModel.promos = await FirestoreService().fetchMainPromosFromFirestore()
-                    
+                    homeViewModel.mainPromo = await FirestoreService().fetchMainPromo()
                     
                 }
                 
@@ -152,9 +154,13 @@ extension HomeView{
                 VStack{
                     
                     
-                    Rectangle()
+                    Image(systemName: "key.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .rotationEffect(Angle(degrees: 60))
                         .frame(height: 120)
-                        .padding()
+                        .foregroundStyle(.accent.mix(with: .brown, by: 0.1))
+                        .padding(.trailing,30)
                     
                     
                 }
@@ -179,24 +185,60 @@ extension HomeView{
     
     var mainPromo: some View{
         
-        ZStack{
-//            AsyncImage(url: ){ image in
-//                image
-//                    .resizable()
-//                    .scaledToFit()
-//                    .frame(minHeight: 300,maxHeight: 800)
-//                    
-//                
-//            }placeholder: {
-//                Rectangle()
-//                    .foregroundStyle(.white)
-//                    .frame(minHeight: 300,maxHeight: 700)
-//                    .scaledToFill()
-//                
-//                    .overlay {
-//                        ProgressView()
-//                    }
-           // }
+        ZStack(alignment: .bottomTrailing){
+            
+            if let imagePath = homeViewModel.mainPromo?.imagePath{
+                
+                AsyncImage(url: homeViewModel.mainImageURL) { image in
+                    image
+                        .resizable()
+                        .frame(height: 350)
+                        .scaledToFit()
+                    
+                    
+                } placeholder: {
+                    Rectangle()
+                        .foregroundStyle(.white)
+                        .frame(height: 350)
+                        .overlay {
+                            ProgressView()
+                        }
+                }
+                .task {
+                    do {
+                        homeViewModel.mainImageURL = try await FirestoreService().fetchImageURL(for: imagePath)
+                    }catch{
+                        print("Error fetching main promo Image: \(error.localizedDescription)")
+                    }
+                }
+                
+            }
+            
+            ZStack{
+                
+                Image(systemName: "circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 35)
+                    .foregroundStyle(.gray.mix(with: .white, by: 0.8))
+                
+                Image(systemName: "arrow.right")
+                    .foregroundStyle(.gray)
+                
+                
+            }
+            .padding()
+            
+            
+            
+            
+        }
+        .frame(height: 350)
+        .onTapGesture {
+            if let promo = homeViewModel.mainPromo{
+                whereToGo(promo: promo)
+            }
+            
         }
     }
     

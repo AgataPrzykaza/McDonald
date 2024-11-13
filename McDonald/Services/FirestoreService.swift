@@ -26,6 +26,49 @@ class FirestoreService {
         return nil
     }
     
+  
+   
+    
+    
+    func fetchMainPromo() async -> Promo? {
+        do {
+           
+            
+            let querySnapshot = try await db.collection("currentPromotions")
+                .whereField("type", isEqualTo: "mainPromo")
+                .getDocuments()
+            
+           
+            guard let document = querySnapshot.documents.first else {
+                print("No document found with type == mainPromo")
+                return nil
+            }
+             
+      
+            guard let promoId = document.data()["promoID"] as? String else {
+                print("Field 'promoId' not found in mainPromo document")
+                return nil
+            }
+            
+            
+          
+            let promoDocument = try await db.collection("mainHeaders").document(promoId).getDocument()
+            
+           
+            if let promo = try? promoDocument.data(as: Promo.self) {
+               
+                return promo
+            } else {
+                print("Failed to decode promo document.")
+                return nil
+            }
+            
+        } catch {
+            print("Error fetching mainPromo: \(error)")
+            return nil
+        }
+    }
+
     
     func fetchMainPromosFromFirestore() async -> [Promo] {
         var promos: [Promo] = []
