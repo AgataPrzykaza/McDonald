@@ -22,7 +22,7 @@ struct ButtonView: View {
                 .foregroundStyle(.black)
                 .overlay(content: {
                     Rectangle()
-                        .stroke(lineWidth: 1)
+                        .stroke(lineWidth: 0.8)
                         .foregroundStyle(.gray)
                 })
        

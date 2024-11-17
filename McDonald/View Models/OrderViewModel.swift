@@ -13,6 +13,9 @@ class OrderViewModel{
     var rootView: ViewState
     var navigationPath: NavigationPath
     
+    var selectedRestaurant: RestaurantLocation?
+    
+    
     init() {
         self.mapModel = MapViewModel()
         self.rootView = .map

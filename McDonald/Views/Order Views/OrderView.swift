@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 struct OrderView: View {
     
     @State var showNextView: Bool = false
@@ -19,7 +17,7 @@ struct OrderView: View {
     var body: some View {
         
         
-        
+    
         NavigationStack(path: $viewModel.navigationPath){
             
             VStack {
