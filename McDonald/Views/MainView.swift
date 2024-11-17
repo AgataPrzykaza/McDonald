@@ -21,6 +21,8 @@ struct MainView: View {
     
     @State  var selectedTab: Tabs = .homePage
     
+    
+    
     var body: some View {
         
         TabView(selection: $selectedTab){
@@ -36,6 +38,7 @@ struct MainView: View {
         
             Tab("Order",systemImage: "takeoutbag.and.cup.and.straw.fill" ,value: .order){
                 OrderView()
+                   
             }
             
             Tab("McDelivery",systemImage: "truck.box.fill",value: .mcdelivery){
@@ -56,4 +59,5 @@ struct MainView: View {
 
 #Preview {
     MainView()
+        .environment(OrderViewModel())
 }

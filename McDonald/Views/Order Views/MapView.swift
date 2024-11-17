@@ -18,16 +18,13 @@ struct Service: Hashable{
 
 struct MapView: View {
     
-
+    @Environment(OrderViewModel.self) var orderModel
     @State var showSheetMoreFIlters = false
     @State var showSearchView = false
  
-
     @Bindable  var vm: MapViewModel = .init()
-    
    
-       
-    
+   
 
     var body: some View {
         
@@ -37,11 +34,16 @@ struct MapView: View {
                 
                 navigationBar
                 
-                filtersView
-                   
-                    
+                Filter(showSheetMoreFIlters: $showSheetMoreFIlters, filters: vm.filters, selectedFilters: $vm.selectedFilters)
+                    .onChange(of: vm.selectedFilters) {
+                        vm.updateFilteredLocations()
+                    }
+                    .fullScreenCover(isPresented: $showSheetMoreFIlters) {
+                        
+                        FilterServiceSheetView(showFilterServiceSheet: $showSheetMoreFIlters, selectedFilters: $vm.selectedFilters,filters: vm.filters)
+                    }
                 
-                
+              
             }
             .padding(.horizontal)
             .padding([.top,.bottom],7)
@@ -56,77 +58,9 @@ struct MapView: View {
     }
 }
 
-struct FilterButton:  View {
-    
-    var name: String
-    
-    var isSelected: Bool = false
-    
-    var body: some View {
-        Text(name)
-            .tint(.black)
-            .font(.caption)
-            .padding(8)
-            .padding(.horizontal, 8)
-            .background(isSelected ? .accent : .white, in: Capsule())
-            .padding(1)
-            .background(.gray, in: .capsule)
-
-    }
-}
-
 
 extension MapView {
     
-    
-    var filtersView: some View {
-        
-        
-        HStack{
-            Image(systemName: "slider.horizontal.3")
-                .imageScale(.large)
-                .padding(.trailing)
-                .onTapGesture {
-
-                    showSheetMoreFIlters = true
-                }
-            
-            
-            ScrollView(.horizontal,showsIndicators: false) {
-                
-                HStack{
-                    
-                    ForEach(vm.filters.filter { vm.filters.firstIndex(of: $0)! < 3 || vm.selectedFilters.contains($0) }, id: \.self) { filter in
-                        
-                        Button {
-                            vm.toggleFilter(filter)
-                            
-                        } label: {
-                            FilterButton(name: filter, isSelected: vm.selectedFilters.contains(filter))
-                        }
-                        .id(filter)
-                        
-                        
-                        
-                        
-                    }
-                    
-                }
-                .onChange(of: vm.selectedFilters) {
-                    vm.updateFilteredLocations()
-                }
-            }
-            
-        
-            
-            Spacer()
-            
-        }
-        .fullScreenCover(isPresented: $showSheetMoreFIlters) {
-            
-            FilterServiceSheetView(showFilterServiceSheet: $showSheetMoreFIlters, selectedFilters: $vm.selectedFilters,filters: vm.filters)
-        }
-    }
     
     var navigationBar: some View{
         HStack{
@@ -139,6 +73,9 @@ extension MapView {
                     .tint(.black)
             }
             Spacer()
+                .onAppear{
+                    print(orderModel.rootView)
+                }
             
             Text("Restauracje")
                 .bold()
@@ -156,15 +93,12 @@ extension MapView {
                     .tint(.black)
             }
             .navigationDestination(isPresented: $showSearchView) {
-                
+                SearchLocationView(location: mockRestaurants)
             }
             
             
         }
     }
-    
-    
-    
     
     
     
@@ -184,9 +118,15 @@ extension MapView {
                 }
             }
 
-          
+            if orderModel.rootView == .order{
+                Text("HALLLLLLLLOOOOOOO")
+                    .bold()
+                    .foregroundStyle(.red)
+            }
             
             Button {
+                
+                
                 
             } label: {
                 Image(systemName: "location.fill")

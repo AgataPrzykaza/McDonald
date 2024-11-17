@@ -9,9 +9,9 @@ import SwiftUI
 
 
 struct LocationCardView: View {
-    
+    @Environment(OrderViewModel.self) var orderModel
     var restaurant: RestaurantLocation
-    
+   
     var body: some View {
         VStack(alignment: .leading){
             
@@ -43,11 +43,28 @@ struct LocationCardView: View {
                     .foregroundStyle(.blue)
                 
                 Spacer()
-                Text("Zamów tutaj")
-                    .font(.subheadline)
-                    .padding(.horizontal)
-                    .padding(6)
-                    .background(.accent.mix(with: .orange, by: 0.2), in: .rect(cornerRadius: 10))
+                
+                Button{
+                    orderModel.rootView = .order
+                    print(orderModel.rootView)
+                    
+                    orderModel.navigationPath.removeLast(orderModel.navigationPath.count)
+                    
+                    
+                } label: {
+                    Text("Zamów tutaj")
+                        .font(.subheadline)
+                        .foregroundStyle(.black)
+                        .padding(.horizontal)
+                        .padding(6)
+                        .background(.accent.mix(with: .orange, by: 0.2), in: .rect(cornerRadius: 10))
+                
+                }
+                .contentShape(Rectangle())
+                   
+
+               
+                    
                 
                 
             }
@@ -61,23 +78,28 @@ struct SearchLocationView: View {
     
     var location: [RestaurantLocation]
     
+    
+    
     var body: some View {
         VStack{
           
             Text("search bar")
-            
-            List{
-                ForEach(location){ restaurant in
-                    
-                    LocationCardView(restaurant: restaurant)
-                    
-                   
-                    
+                
+            ScrollView{
+                VStack{
+                    ForEach(location){ restaurant in
+                        
+                        LocationCardView(restaurant: restaurant)
+                            .padding()
+                        
+                        Divider()
+                        
+                        
+                        
+                    }
                     
                 }
             }
-            .listStyle(.plain)
-            
             
         }
         .navigationTitle("Znajdź restaurację")
@@ -88,5 +110,6 @@ struct SearchLocationView: View {
 #Preview {
     NavigationStack{
         SearchLocationView(location: mockRestaurants)
+            
     }
 }

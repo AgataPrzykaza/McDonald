@@ -7,55 +7,55 @@
 
 import SwiftUI
 
+
+
 struct OrderView: View {
     
     @State var showNextView: Bool = false
+    @State var viewModel: OrderViewModel = .init()
+    
+    @State  var viewState: ViewState = .map
     
     var body: some View {
-        NavigationStack{
+        
+        
+        
+        NavigationStack(path: $viewModel.navigationPath){
             
-            Spacer()
-            
-            VStack{
-                
-                Image("restaurant")
-                    .resizable()
-                    .frame(height: 150)
-                
-                Text("Zamów i odbierz")
-                    .font(.system(size: 36))
-                    .fontWeight(.bold)
-                Text("Zamawiaj szybko i wygodnie w aplikacji i odbieraj w wybranej restauracji, tak jak lubisz - przy ladzie, do stolika, w McDrive, lub na parkingu.")
-                    .multilineTextAlignment(.center)
-                
-                
-                
+            VStack {
+                if viewModel.rootView == .map{
+                    OrderIntroView()
+                }
+                else if viewModel.rootView == .order {
+                    Text("order her we are")
+                }
             }
-            .padding()
-           
-            
-            Spacer()
-            
-            
-            Button {
-                showNextView = true
-            } label: {
-                ButtonView(title: "Wybierz restaurację", color: .yellow)
-                    .padding(.bottom,10)
+            .navigationDestination(for: ViewState.self) { route in
+                switch route {
+                case .map:
+                    // Widok mapy
+                    MapView()
+                case .order:
+                    // Widok zamówienia
+                    Text("Here we are in the order view")
+                        .font(.title)
+                }
             }
-            .navigationDestination(isPresented: $showNextView) {
-                MapView()
-            }
-
-       
+            
             
         }
+        .environment(viewModel)
         
-       
-       
+        
+        
+        
+        
+        
     }
 }
 
 #Preview {
+    
     OrderView()
+        .environment(OrderViewModel())
 }
