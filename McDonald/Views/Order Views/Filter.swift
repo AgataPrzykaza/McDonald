@@ -8,46 +8,61 @@
 import SwiftUI
 
 struct Filter: View {
+    @Environment(OrderViewModel.self) var orderModel
     
     @Binding var showSheetMoreFIlters: Bool
-    let filters: [String]
-    @Binding var selectedFilters: [String]
+
     
     func toggleFilter(_ filter: String) {
          
           DispatchQueue.main.async {
-              if self.selectedFilters.contains(filter) {
-                  self.selectedFilters.removeAll { $0 == filter }
+              if orderModel.mapModel.selectedFilters.contains(filter) {
+                  orderModel.mapModel.selectedFilters.removeAll { $0 == filter }
               } else {
-                  self.selectedFilters.append(filter)
+                  orderModel.mapModel.selectedFilters.append(filter)
               }
           }
       }
+    
+    func showBadge() -> Bool{
+        orderModel.mapModel.selectedFilters.isEmpty ? false : true
+    }
     
     var body: some View {
         
         
         HStack{
-            Image(systemName: "slider.horizontal.3")
-                .imageScale(.large)
-                .padding(.trailing)
-                .onTapGesture {
-
-                    showSheetMoreFIlters = true
+            ZStack(alignment: .topLeading){
+                Image(systemName: "slider.horizontal.3")
+                    .imageScale(.large)
+                
+                if showBadge(){
+                    
+                    Image(systemName: "circle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width:8)
+                        .foregroundStyle(.red.mix(with: .black, by: 0.1))
                 }
+            }
+            .padding(.trailing)
+            .onTapGesture {
+                
+                showSheetMoreFIlters = true
+            }
             
             
             ScrollView(.horizontal,showsIndicators: false) {
                 
                 HStack{
                     
-                    ForEach(filters.filter { filters.firstIndex(of: $0)! < 3 || selectedFilters.contains($0) }, id: \.self) { filter in
+                    ForEach(orderModel.mapModel.filters.filter { orderModel.mapModel.filters.firstIndex(of: $0)! < 3 || orderModel.mapModel.selectedFilters.contains($0) }, id: \.self) { filter in
                         
                         Button {
                             toggleFilter(filter)
                             
                         } label: {
-                            FilterButton(name: filter, isSelected: selectedFilters.contains(filter))
+                            FilterButton(name: filter, isSelected: orderModel.mapModel.selectedFilters.contains(filter))
                         }
                         .id(filter)
                         

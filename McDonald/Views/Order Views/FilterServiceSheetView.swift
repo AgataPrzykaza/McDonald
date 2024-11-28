@@ -10,12 +10,12 @@ import SwiftUI
 struct FilterServiceSheetView: View{
     
     @Binding var showFilterServiceSheet: Bool
-    @Binding var selectedFilters: [String]
-    var filters: [String]
-    
+//    @Binding var selectedFilters: [String]
+//    var filters: [String]
+    @Environment(OrderViewModel.self) var orderModel
     
     func clearFilters() {
-        selectedFilters.removeAll()
+        orderModel.mapModel.selectedFilters.removeAll()
     }
     
     
@@ -46,17 +46,17 @@ struct FilterServiceSheetView: View{
             
             
             List{
-                ForEach(filters, id: \.self) { filter in
+                ForEach(orderModel.mapModel.filters, id: \.self) { filter in
                     
                     Toggle(isOn:Binding(
                         get: {
-                            selectedFilters.contains(filter)
+                            orderModel.mapModel.selectedFilters.contains(filter)
                         },
                         set: { isSelected in
                             if isSelected {
-                                selectedFilters.append(filter) // Dodaj filtr do tablicy
+                                orderModel.mapModel.selectedFilters.append(filter) // Dodaj filtr do tablicy
                             } else {
-                                selectedFilters.removeAll { $0 == filter } // Usuń filtr z tablicy
+                                orderModel.mapModel.selectedFilters.removeAll { $0 == filter } // Usuń filtr z tablicy
                             }
                         }
                     ) ){
@@ -80,9 +80,9 @@ struct FilterServiceSheetView: View{
                 } label: {
                     ButtonView(title: "Wyczyść", color: .white)
                         .padding()
-                        .opacity(selectedFilters.isEmpty ? 0.5 : 1)
+                        .opacity(orderModel.mapModel.selectedFilters.isEmpty ? 0.5 : 1)
                 }
-                .disabled(selectedFilters.isEmpty)
+                .disabled(orderModel.mapModel.selectedFilters.isEmpty)
                 
                 
                 
@@ -93,9 +93,9 @@ struct FilterServiceSheetView: View{
                 } label: {
                     ButtonView(title: "Nałóż filtr", color: .accent)
                         .padding()
-                        .opacity(selectedFilters.isEmpty ? 0.5 : 1)
+                        .opacity(orderModel.mapModel.selectedFilters.isEmpty ? 0.5 : 1)
                 }
-                .disabled(selectedFilters.isEmpty)
+                .disabled(orderModel.mapModel.selectedFilters.isEmpty)
                 
                 
             }

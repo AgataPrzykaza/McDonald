@@ -26,7 +26,37 @@ class FirestoreService {
         return nil
     }
     
-  
+    
+    func fetchCollection<T: Decodable>(
+        from collectionName: String,
+        as type: T.Type,
+        filter: ((Query) -> Query)? = nil
+    ) async -> [T] {
+        var results: [T] = []
+        
+        do {
+            var query: Query = db.collection(collectionName)
+            if let filter = filter {
+                query = filter(query)
+            }
+            
+            let querySnapshot = try await query.getDocuments()
+            
+            for document in querySnapshot.documents {
+                if let object = try? document.data(as: T.self) {
+                    results.append(object)
+                } else {
+                    print("Nie udało się zdekodować dokumentu: \(document.documentID)")
+                }
+            }
+        } catch {
+            print("Błąd podczas pobierania danych z kolekcji \(collectionName): \(error)")
+        }
+        
+        return results
+    }
+
+    
    
     
     

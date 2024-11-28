@@ -3,7 +3,7 @@ import Foundation
 import SwiftUI
 
 enum ViewState {
-    case map, order
+    case map, order, searchLocation,intro
 }
 
 @Observable
@@ -18,7 +18,7 @@ class OrderViewModel{
     
     init() {
         self.mapModel = MapViewModel()
-        self.rootView = .map
+        self.rootView = .intro
         self.navigationPath = NavigationPath()
     }
     

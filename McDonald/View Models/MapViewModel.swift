@@ -16,6 +16,8 @@ class MapViewModel{
     var filters: [String] = ["McCafe", "McDrive", "Otwarte", "Śniadania", "McDelivery", "Zamów i odbierz"]
     var filteredLocations: [RestaurantLocation] = mockRestaurants
     
+    var selectedLocation: RestaurantLocation?
+    
      func toggleFilter(_ filter: String) {
           
            DispatchQueue.main.async {

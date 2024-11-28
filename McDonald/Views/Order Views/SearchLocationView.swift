@@ -9,18 +9,37 @@ import SwiftUI
 
 struct SearchLocationView: View {
     
-    var location: [RestaurantLocation]
+    @Environment(OrderViewModel.self) var orderModel
     
+    @State var showSheetMoreFIlters: Bool = false
+    @State var searchText: String = ""
     
     
     var body: some View {
         VStack{
           
-            Text("search bar")
+            HStack {
+                TextField("Search...", text: $searchText)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+            }
+            
+            
+            Filter(showSheetMoreFIlters: $showSheetMoreFIlters)
+                .onChange(of: orderModel.mapModel.selectedFilters) {
+                    orderModel.mapModel.updateFilteredLocations()
+                }
+                .fullScreenCover(isPresented: $showSheetMoreFIlters) {
+                    
+                    FilterServiceSheetView(showFilterServiceSheet: $showSheetMoreFIlters)
+                }
+                .padding(.horizontal)
                 
             ScrollView{
                 VStack{
-                    ForEach(location){ restaurant in
+                    ForEach(orderModel.mapModel.filteredLocations.filter({ location in
+                        searchText.isEmpty || location.name.lowercased().contains(searchText.lowercased())
+                    } )){ restaurant in
                         
                         LocationCardView(restaurant: restaurant, buttonPosition: .right)
                             .padding()
@@ -30,6 +49,7 @@ struct SearchLocationView: View {
                         
                         
                     }
+                   
                     
                 }
             }
@@ -42,7 +62,8 @@ struct SearchLocationView: View {
 
 #Preview {
     NavigationStack{
-        SearchLocationView(location: mockRestaurants)
+        SearchLocationView()
+            .environment(OrderViewModel())
             
     }
 }

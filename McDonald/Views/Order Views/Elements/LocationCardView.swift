@@ -53,6 +53,9 @@ struct LocationCardView: View {
                 
                 if buttonPosition == .right{
                     Button{
+                        
+                        orderModel.selectedRestaurant = restaurant
+                      
                         orderModel.rootView = .order
                         
                         orderModel.navigationPath.removeLast(orderModel.navigationPath.count)
@@ -77,6 +80,8 @@ struct LocationCardView: View {
             
             if buttonPosition == .center{
                 Button{
+                    
+                    orderModel.selectedRestaurant = restaurant
                     orderModel.rootView = .order
                     
                     orderModel.navigationPath.removeLast(orderModel.navigationPath.count)

@@ -12,7 +12,7 @@ struct OrderView: View {
     @State var showNextView: Bool = false
     @State var viewModel: OrderViewModel = .init()
     
-    @State  var viewState: ViewState = .map
+  //  @State  var viewState: ViewState = .map
     
     var body: some View {
         
@@ -21,11 +21,12 @@ struct OrderView: View {
         NavigationStack(path: $viewModel.navigationPath){
             
             VStack {
-                if viewModel.rootView == .map{
+                if viewModel.rootView == .intro{
                     OrderIntroView()
                 }
                 else if viewModel.rootView == .order {
-                    Text("order her we are")
+                    OrderMenuView()
+                        
                 }
             }
             .navigationDestination(for: ViewState.self) { route in
@@ -37,6 +38,10 @@ struct OrderView: View {
                     // Widok zamówienia
                     Text("Here we are in the order view")
                         .font(.title)
+                case .searchLocation:
+                    SearchLocationView()
+                case .intro:
+                    OrderIntroView()
                 }
             }
             

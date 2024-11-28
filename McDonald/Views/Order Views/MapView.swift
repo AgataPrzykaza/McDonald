@@ -22,9 +22,9 @@ struct MapView: View {
     @State var showSheetMoreFIlters = false
     @State var showSearchView = false
  
-    @Bindable  var vm: MapViewModel = .init()
+    //@Bindable  var vm: MapViewModel = .init()
    
-    @State var pickedLocation: RestaurantLocation?
+    @State var selectedRestaurant: RestaurantLocation?
     @State var showLocationPreview: Bool = false
    
 
@@ -36,13 +36,13 @@ struct MapView: View {
                 
                 navigationBar
                 
-                Filter(showSheetMoreFIlters: $showSheetMoreFIlters, filters: vm.filters, selectedFilters: $vm.selectedFilters)
-                    .onChange(of: vm.selectedFilters) {
-                        vm.updateFilteredLocations()
+                Filter(showSheetMoreFIlters: $showSheetMoreFIlters)
+                    .onChange(of: orderModel.mapModel.selectedFilters) {
+                        orderModel.mapModel.updateFilteredLocations()
                     }
                     .fullScreenCover(isPresented: $showSheetMoreFIlters) {
                         
-                        FilterServiceSheetView(showFilterServiceSheet: $showSheetMoreFIlters, selectedFilters: $vm.selectedFilters,filters: vm.filters)
+                        FilterServiceSheetView(showFilterServiceSheet: $showSheetMoreFIlters)
                     }
                 
               
@@ -84,16 +84,15 @@ extension MapView {
             
             Button {
                 
-                showSearchView.toggle()
+                orderModel.navigationPath.append(ViewState.searchLocation)
+                
+               // showSearchView.toggle()
                 
                 
             } label: {
                 Image(systemName: "magnifyingglass")
                     .imageScale(.large)
                     .tint(.black)
-            }
-            .navigationDestination(isPresented: $showSearchView) {
-                SearchLocationView(location: mockRestaurants)
             }
             
             
@@ -106,8 +105,8 @@ extension MapView {
         ZStack(alignment: .bottomTrailing){
             
             Map(){
-                if !vm.filteredLocations.isEmpty{
-                    ForEach(vm.filteredLocations) { location in
+                if !orderModel.mapModel.filteredLocations.isEmpty{
+                    ForEach(orderModel.mapModel.filteredLocations) { location in
                         
                         Annotation("", coordinate: location.coordinate) {
                             Image("icon")
@@ -115,11 +114,11 @@ extension MapView {
                                 .scaledToFit()
                                 .frame(height:30)
                                 .clipShape(.circle)
-                                .scaleEffect( location.name == pickedLocation?.name ?? "" ? 1.2 : 0.9)
+                                .scaleEffect( location.name == selectedRestaurant?.name ?? "" ? 1.2 : 0.9)
                                 .shadow(radius: 10)
                                 .onTapGesture{
                                     
-                                    pickedLocation = location
+                                    selectedRestaurant = location
                                     
                                     withAnimation(.bouncy) {
                                         showLocationPreview = true
@@ -153,7 +152,7 @@ extension MapView {
                    
                 }
                 
-                if showLocationPreview , let location = pickedLocation{
+                if showLocationPreview , let location = selectedRestaurant{
                     VStack{
                         
                         HStack{
@@ -168,7 +167,7 @@ extension MapView {
                             Spacer()
                             Button {
                                 showLocationPreview = false
-                                pickedLocation = nil
+                                selectedRestaurant = nil
                             } label: {
                                 Image(systemName: "xmark")
                                     .imageScale(.large)
