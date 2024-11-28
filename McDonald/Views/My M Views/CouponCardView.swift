@@ -34,6 +34,7 @@ struct CouponCardView: View {
             
             Text(coupon.title)
                 .fontWeight(.bold)
+                .foregroundStyle(.black)
         }
         .padding()
         .background(

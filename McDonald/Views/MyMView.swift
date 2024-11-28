@@ -15,6 +15,9 @@ struct MyMView: View {
     
     @State var myService: MyMService = MyMService()
     
+    @State var showQRSheet: Bool = false
+    
+    let userID = "M23423434"
     
     var body: some View {
         
@@ -22,7 +25,24 @@ struct MyMView: View {
         NavigationStack{
             ScrollView{
                 VStack{
-                    Text("QR code")
+                    
+                    
+                    
+                    UserQRCodeView(userID: userID)
+                        .background(content: {
+                            Color.white
+                                .clipShape(.rect(cornerRadius: 15))
+                                .shadow(radius: 2)
+                        })
+                        .padding()
+                        .onTapGesture {
+                            withAnimation(.easeInOut) {
+                                showQRSheet.toggle()
+                            }
+                         
+                        }
+                    
+                       
                     
                     prizeHeaders
                         .padding(.bottom)
@@ -31,9 +51,12 @@ struct MyMView: View {
                     
                     Spacer()
                 }
+                .sheet(isPresented: $showQRSheet) {
+                    QRSheet(userID: userID)
+                }
                 
             }
-            .padding()
+            .padding(.horizontal)
             .navigationDestination(for: Points.self) { points in
                 Text("Details for Points")
             }
@@ -49,7 +72,7 @@ struct MyMView: View {
                
             }
             .toolbarBackground(.clear, for: .navigationBar)
-            
+            .scrollIndicators(.hidden)
             
         }
        

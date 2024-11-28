@@ -17,8 +17,14 @@ extension MyMView{
             
             ForEach(myService.coupons, id: \.self){ coupon in
                 
-                CouponCardView(coupon: coupon)
-                
+                NavigationLink {
+                    CouponView(coupon: coupon)
+                } label: {
+                    CouponCardView(coupon: coupon)
+                    
+                }
+
+               
                 
             }
             
