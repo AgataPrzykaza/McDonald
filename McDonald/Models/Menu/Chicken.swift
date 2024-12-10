@@ -29,7 +29,7 @@ class Chicken: MenuItem{
     }
     
     required init(from decoder: Decoder) throws {
-        var container = try decoder.container(keyedBy: SauceCodingKeys.self)
+        let container = try decoder.container(keyedBy: SauceCodingKeys.self)
         self.sauces = try container.decode([Sauce].self, forKey: .sauces)
         self.numberOfSauce = try container.decode(Int.self, forKey: .numberOfSauce)
         try super.init(from: decoder)

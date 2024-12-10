@@ -7,13 +7,31 @@
 
 import SwiftUI
 
+@Observable final class LoginViewModel{
+    var email: String = ""
+    var password: String = ""
+    
+    func signIn() async throws{
+        guard !email.isEmpty, !password.isEmpty else {
+            print("No email or password found.")
+            return }
+        
+        try await AuthManager.shared.signInUser(email: email, password: password)
+    }
+}
+
 struct LoginView: View {
     
     @State var hidePasswordFieldOpacity: Bool = true
+    @State var viewModel: LoginViewModel = LoginViewModel()
+    @Environment(MainViewModel.self) var mainViewModel
+    @Binding var showSheet: Bool
     
     var body: some View {
         
         VStack{
+            
+            
             
             baner
             
@@ -65,12 +83,24 @@ struct LoginView: View {
             
             
             
-            NavigationLink {
-                
-            } label: {
+           
                 ButtonView(title: "Zaloguj się", color: .yellow)
-            }
-            .padding(.bottom,10)
+                .padding(.bottom,10)
+                .onTapGesture {
+                    Task{
+                        do{
+                            try await viewModel.signIn()
+                            mainViewModel.showSignInView = false
+                            showSheet = false
+                            mainViewModel.selectTab(.homePage)
+                        }
+                        catch{
+                            print("Error: \(error)")
+                        }
+                    }
+                  
+                    
+                }
             
             
             
@@ -107,7 +137,7 @@ extension LoginView {
                 .foregroundStyle(.gray)
                 .padding(.horizontal)
             
-            TextField("", text: .constant(""))
+            TextField("Wprowadź e-mail", text: $viewModel.email)
                 .frame(height: 50)
                 .overlay(
                     RoundedRectangle(cornerRadius: 5)
@@ -128,7 +158,7 @@ extension LoginView {
                 .padding(.horizontal)
             
             ZStack{
-                SecureField("Enter Text", text:.constant(""))
+                SecureField("Wprowadź hasło", text: $viewModel.password)
                     .frame(height: 50)
                     .textInputAutocapitalization(.never)
                     .keyboardType(.asciiCapable)
@@ -142,7 +172,7 @@ extension LoginView {
                     .opacity(hidePasswordFieldOpacity ?  1 : 0)
                 
                 
-                TextField("", text: .constant(""))
+                TextField("Wprowadź hasło", text: $viewModel.password)
                     .frame(height: 50)
                     .textInputAutocapitalization(.never)
                     .keyboardType(.asciiCapable)
@@ -171,7 +201,8 @@ extension LoginView {
 
 #Preview {
     NavigationStack {
-        LoginView()
+        LoginView( showSheet: .constant(true))
+            .environment(MainViewModel())
     }
     
 }

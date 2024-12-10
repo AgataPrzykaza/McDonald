@@ -11,8 +11,10 @@ import FirebaseStorage
 
 struct HomeView: View {
     
-    @Binding var selectionTab: Tabs
+  
     @State var homeViewModel: HomeViewViewModel = .init()
+    @Environment(MainViewModel.self) var mViewModel
+    @State var showsheet: Bool = false
     
  
     func whereToGo(promo: Promo) {
@@ -21,16 +23,16 @@ struct HomeView: View {
             
             switch promo.title {
             case "delivery":
-                selectionTab = .mcdelivery
+                mViewModel.selectTab(.mcdelivery)
                 
             case "okazyeah":
-                selectionTab = .myM
+                mViewModel.selectTab(.myM)
                 
             case "takeout":
-                selectionTab = .order
+                mViewModel.selectTab(.order)
                 
             default:
-                selectionTab = .homePage
+                mViewModel.selectTab(.homePage)
             }
         }
         else{
@@ -41,7 +43,10 @@ struct HomeView: View {
         
     }
     
+    
     var body: some View {
+        
+        @Bindable var  mainViewModel = mViewModel
         
         NavigationStack{
             
@@ -51,8 +56,12 @@ struct HomeView: View {
                 
                 mainPromo
                 
-                if homeViewModel.showLoginCard == true{
+                if  mViewModel.showSignInView{
                     loginCard
+                        .onTapGesture {
+                            showsheet = true
+                        }
+                      
                 }
                 
                 
@@ -81,29 +90,43 @@ struct HomeView: View {
                 
                 
             }
+            .fullScreenCover(isPresented: $showsheet) {
+                NavigationStack{
+                    LoginSignScreen(showSheet: $showsheet)
+                    
+                }
+            }
             .navigationDestination(isPresented: Binding<Bool>(
                 get: { homeViewModel.selectedPromo != nil },
                 set: { if !$0 { homeViewModel.selectedPromo = nil } }
             ), destination: {
                 if let promo = homeViewModel.selectedPromo {
-                    PromoView(promo: promo, selectionTab: $selectionTab)
+                    PromoView(promo: promo)
                         
                 }
                 
             })
             .onAppear{
+               
                 Task {
                     homeViewModel.imageURLs = await FirestoreService().fetchImagesFromFirebaseStorage()
                     homeViewModel.promos = await FirestoreService().fetchMainPromosFromFirestore()
                     homeViewModel.mainPromo = await FirestoreService().fetchMainPromo()
                     
+                   
+                    
                 }
                 
+                
+                    
+                
+              
                 
             }
             
             
         }
+        
     }
     
     
@@ -171,15 +194,7 @@ extension HomeView{
             
             
         }
-        .overlay(alignment: .topTrailing) {
-            Button {
-                homeViewModel.showLoginCard.toggle()
-            } label: {
-                Image(systemName: "xmark")
-                    .foregroundStyle(.black)
-            }
-            .padding(30)
-        }
+        
         
     }
     
@@ -247,5 +262,6 @@ extension HomeView{
 
 
 #Preview {
-    HomeView(selectionTab: .constant(Tabs.homePage))
+    HomeView()
+        .environment(MainViewModel())
 }

@@ -43,7 +43,7 @@ struct ContentView: View {
    @State  var menuItems: [MenuItem] = []
    
     
-   @State  var user: User?
+   @State  var user: UserModel?
     
     func fetchMenu() async {
         
@@ -61,7 +61,7 @@ struct ContentView: View {
     }
     
     func saveUser() async{
-        let user = User(id: 200, name: "alla", points: 234, cupons: [], email: "asld@.gmail.com")
+        let user = UserModel(id: 200, name: "alla", points: 234, cupons: [], email: "asld@.gmail.com")
         do{
             
             try await menuService.saveUser(user)

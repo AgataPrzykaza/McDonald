@@ -13,22 +13,31 @@ enum Tabs: Equatable, Hashable, Identifiable {
     case myM
     case order
     case mcdelivery
-    case obb
+    case settings
     var id: Self { self }
 }
 
+
+
+
 struct MainView: View {
+   
     
     @State  var selectedTab: Tabs = .homePage
+   
+    @Environment(MainViewModel.self) var mViewModel
+    
     
     
     
     var body: some View {
         
-        TabView(selection: $selectedTab){
+        @Bindable var  mainViewModel = mViewModel
+        
+        TabView(selection: $mainViewModel.selectedTab){
             
             Tab("Main page", systemImage: "house.fill",value: .homePage){
-                HomeView(selectionTab: $selectedTab)
+                HomeView()
             }
             
             Tab("MyM",systemImage: "star.fill",value: .myM){
@@ -45,19 +54,31 @@ struct MainView: View {
                 McDelivery()
             }
             
-            Tab("McDelivery",systemImage: "heart",value: .obb){
-                McDelivery()
+            Tab("Settings",systemImage: "heart",value: .settings){
+                SettingsView()
             }
             
-            Tab("McDelivery",systemImage: "heart",value: .obb){
+            Tab("McDelivery",systemImage: "heart",value: .settings){
                 McDelivery()
             }
+        
         }
+        .onAppear{
+            let authuser = try? AuthManager.shared.getAuthenticatedUser()
+            mainViewModel.showSignInView = authuser == nil
+        }
+       
+        
+        
         
     }
 }
 
+
+
 #Preview {
     MainView()
         .environment(OrderViewModel())
+        .environment(MainViewModel())
+        
 }

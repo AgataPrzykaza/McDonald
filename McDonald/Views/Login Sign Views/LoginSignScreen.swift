@@ -10,10 +10,23 @@ import SwiftUI
 struct LoginSignScreen: View {
     
 
+    @Environment(\.dismiss) var dismiss
+    @Binding var showSheet: Bool
     
     var body: some View {
         
         VStack{
+            
+            HStack{
+                Image(systemName: "xmark")
+                    .imageScale(.large)
+                    .onTapGesture {
+                        showSheet = false
+                    }
+                
+                Spacer()
+            }
+            .padding(.horizontal)
             VStack(alignment: .leading){
                 
                 Rectangle()
@@ -44,7 +57,7 @@ struct LoginSignScreen: View {
                 HStack(spacing: 0){
                     
                     NavigationLink {
-                        
+                        LoginView( showSheet: $showSheet)
                     } label: {
                         Text("Zaloguj się")
                             .frame(maxWidth: .infinity)
@@ -55,7 +68,7 @@ struct LoginSignScreen: View {
                     }
                     
                     NavigationLink {
-                        
+                        RegisterView(showSheet: $showSheet)
                     } label: {
                         Text("Załóż konto")
                             .frame(maxWidth: .infinity)
@@ -88,5 +101,9 @@ struct LoginSignScreen: View {
 }
 
 #Preview {
-    LoginSignScreen()
+    NavigationStack {
+        LoginSignScreen( showSheet: .constant(true))
+            .environment(MainViewModel())
+    }
+ 
 }

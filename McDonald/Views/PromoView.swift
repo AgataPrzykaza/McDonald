@@ -10,7 +10,7 @@ import SwiftUI
 struct PromoView: View {
     
     var promo: Promo
-    @Binding var selectionTab: Tabs
+    @Environment(MainViewModel.self) var mViewModel
 
     
     @State var promoViewModel: PromoViewModel = PromoViewModel()
@@ -39,7 +39,7 @@ struct PromoView: View {
                             .background(.yellow,in: .capsule)
                             .onTapGesture {
                                
-                                    selectionTab = .order
+                                mViewModel.selectTab(.order)
                                
                                 
                             }

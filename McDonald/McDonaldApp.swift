@@ -17,15 +17,31 @@ class AppDelegate: NSObject, UIApplicationDelegate {
   }
 }
 
+@Observable class MainViewModel{
+    
+    var showSignInView = false
+    
+     var selectedTab: Tabs = .homePage
+    
+    func selectTab(_ tab: Tabs){
+        selectedTab = tab
+    }
+    
+    func shoSignInToggle(){
+        showSignInView.toggle()
+    }
+}
+
 @main
 struct McDonaldApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
+    @State var viewModel: MainViewModel = MainViewModel()
     
     var body: some Scene {
         WindowGroup {
             MainView()
+                .environment(viewModel)
                 
         }
     }

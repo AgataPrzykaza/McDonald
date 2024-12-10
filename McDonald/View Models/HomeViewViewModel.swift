@@ -15,8 +15,8 @@ import FirebaseStorage
       var imageURLs: [URL] = []
       var selectedPromo: Promo?
       var promos: [Promo] = []
-     var mainPromo: Promo?
-     var mainImageURL: URL?
+      var mainPromo: Promo?
+      var mainImageURL: URL?
      
      func fetchImageURL(for imagePath: String) async throws -> URL {
          let storageRef = Storage.storage().reference(withPath: imagePath)
