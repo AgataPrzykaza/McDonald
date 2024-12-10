@@ -7,7 +7,7 @@
 
 import FirebaseFirestore
 
-class User: Codable, Identifiable {
+class UserModel: Codable, Identifiable {
     
     var id: Int
     var name: String
