@@ -63,6 +63,9 @@ struct MainView: View {
             }
         
         }
+        .task{
+            try? await mainViewModel.loadCurrentUser()
+        }
         .onAppear{
             let authuser = try? AuthManager.shared.getAuthenticatedUser()
             mainViewModel.showSignInView = authuser == nil

@@ -68,7 +68,8 @@ struct LoginSignScreen: View {
                     }
                     
                     NavigationLink {
-                        RegisterView(showSheet: $showSheet)
+                        InputNameView(showSheet: $showSheet)
+                       
                     } label: {
                         Text("Załóż konto")
                             .frame(maxWidth: .infinity)

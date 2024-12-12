@@ -8,11 +8,21 @@
 import SwiftUI
 
 struct McDelivery: View {
+    @Environment(MainViewModel.self) var mViewModel
+    
     var body: some View {
-        Text("delivery")
+        VStack{
+            List{
+                if let user = mViewModel.user {
+                    Text(user.email ?? "nie ma")
+                }
+              
+            }
+        }
     }
 }
 
 #Preview {
     McDelivery()
+        .environment(MainViewModel())
 }
