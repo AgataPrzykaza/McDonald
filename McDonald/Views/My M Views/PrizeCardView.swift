@@ -8,10 +8,15 @@
 
 import SwiftUI
 
+
+
+
 struct PrizeCardView: View {
     
     let prize: MPrize
     @State private var imageURL: URL?
+    
+    @Environment(MainViewModel.self) var mViewModel
     
     var body: some View {
         VStack{
@@ -68,6 +73,14 @@ struct PrizeCardView: View {
         .padding(5)
         .task {
             await loadImage()
+        }
+        .opacity(mViewModel.user != nil ? 1 : 0.75)
+        .overlay(alignment: .topLeading) {
+            if mViewModel.user == nil {
+                Image(systemName: "lock.fill")
+                    .foregroundStyle(.gray)
+                    .padding()
+            }
         }
     }
     

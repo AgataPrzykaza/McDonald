@@ -28,6 +28,7 @@ final class SignInEmailViewModel{
             
             let user = UserDB(auth: result, name: name)
             try await UserManager.shared.createNewUser(user: user)
+            try await makePoints(user: user)
             
             
         } catch {
@@ -37,6 +38,18 @@ final class SignInEmailViewModel{
         
         
         
+        
+    }
+    func makePoints(user: UserDB) async throws{
+        
+            do {
+               
+                try await PointsManager.shared.createNewPointsDocument(for: user.userId)
+               
+            } catch {
+                
+                throw AutheticationError.networkError
+            }
         
     }
     

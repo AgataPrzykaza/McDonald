@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct MyViewToolbar: ToolbarContent{
+struct MyMToolbar: ToolbarContent{
     
-    @Binding var points : Points
+   
 
+   
     
     var body: some ToolbarContent{
         ToolbarItem(placement: .topBarLeading) {
@@ -25,21 +26,31 @@ struct MyViewToolbar: ToolbarContent{
                 
         }
         
-        ToolbarItem(placement: .topBarTrailing) {
-            NavigationLink(value: points) {
-                
-                HStack{
-                    Text("\(points.currentPoints) pkt")
-                        .fontWeight(.heavy)
-                    Image(systemName: "arrow.right")
-                }
-                .foregroundStyle(.black)
-                
-            }
-            
-        }
+      
     }
     
 }
 
+struct PointsToolbar: ToolbarContent{
+    
+    @Binding var points : Points?
+    
+    var body: some ToolbarContent{
+        ToolbarItem(placement: .topBarTrailing) {
+            
+            NavigationLink {
+                PointsHistoryView(points: $points)
+            } label: {
+                HStack{
+                    Text("\(points?.currentPoints ?? 12345) pkt")
+                        .fontWeight(.heavy)
+                    Image(systemName: "arrow.right")
+                }
+                .foregroundStyle(.black)
+            }
 
+           
+            
+        }
+    }
+}

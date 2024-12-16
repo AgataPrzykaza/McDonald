@@ -15,13 +15,7 @@ import FirebaseAuth
     var showError: Bool = false
     var hidePasswordFieldOpacity: Bool = true
     
-    func signIn() async throws{
-        guard !email.isEmpty, !password.isEmpty else {
-            print("No email or password found.")
-            return }
-        
-        try await AuthManager.shared.signInUser(email: email, password: password)
-    }
+
     
     func login() async {
             do {

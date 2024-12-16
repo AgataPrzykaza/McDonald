@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CouponView: View {
-    
+    @Environment(MainViewModel.self) var mViewModel
     let coupon: Coupon
     let rules = ["Do użycia 1x na transakcje","Zaloguj się / złóż konto"]
     @State var imageURL: URL?
@@ -22,8 +22,9 @@ struct CouponView: View {
                     AsyncImage(url: imageURL) { image in
                         image
                             .resizable()
-                            .frame(width: .infinity, height: 250)
                             .scaledToFit()
+                            .frame(height: 250)
+                            
                         
                     } placeholder: {
                         Rectangle()
@@ -59,12 +60,20 @@ struct CouponView: View {
                 .padding()
             
             }
+            .overlay(alignment: .topTrailing) {
+                if mViewModel.user == nil {
+                    Image(systemName: "lock.fill")
+                        .foregroundStyle(.gray)
+                        .padding()
+                }
+            }
             Spacer()
             
             Text("Odbierz")
                  .padding()
                  .frame(maxWidth: .infinity)
-                 .background(.yellow, in: .rect)
+                 .background(mViewModel.user != nil ? .yellow : .gray, in: .rect)
+                 .disabled(mViewModel.user == nil )
             
             
         }

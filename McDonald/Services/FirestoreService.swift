@@ -157,31 +157,7 @@ class FirestoreService {
     }
     
     
-    func fetchUser(mail: String) async throws -> UserModel?{
-        
-        var user: UserModel?
-        do {
-            let querySnapshot = try await db.collection("users")
-                .whereField("email", isEqualTo: mail)
-                .getDocuments()
-            
-           
-           if let document = querySnapshot.documents.first
-            {
-               if let u = try? document.data(as: UserModel.self){
-                   user = u
-                   print("User found: \(String(describing: user))")
-               }
-           }
-            
-        } catch {
-            print("Error getting documents: \(error)")
-        }
-
-        return user
-        
-        
-    }
+   
         func fetchMenu() async throws -> [MenuItem] {
                
                 let snapshot = try await db.collection("menu").getDocuments()
@@ -247,15 +223,7 @@ class FirestoreService {
             }
         }
     
-    func saveUser(_ user: UserModel) async throws{
-        do{
-            let _ = try  db.collection("users").addDocument(from: user)
-            print("Successfully saved user")
-        }
-        catch{
-            throw error
-        }
-    }
+    
     
     func saveOrder(){
         

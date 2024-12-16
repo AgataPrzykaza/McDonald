@@ -80,6 +80,7 @@ extension MyMView{
                                 PrizeView(prize: prize)
                             } label: {
                                 PrizeCardView(prize: prize)
+                                   
                             }
 
                            

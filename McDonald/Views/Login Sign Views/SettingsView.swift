@@ -34,6 +34,7 @@ struct SettingsView: View {
                             await MainActor.run {
                                        mViewModel.showSignInView = true
                                        mViewModel.selectTab(.homePage)
+                                mViewModel.user = nil
                                    }
                         } catch {
                             print(error)
