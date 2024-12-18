@@ -8,6 +8,30 @@
 
 import SwiftUI
 
+@MainActor
+@Observable class PrizeCardViewModel{
+    
+    var prizeTakenToday: Bool = false
+    
+    func checkIfPrizeTakenToday(for userID: String, prize: MPrize) async {
+        let rewards = await RewardManager.shared.getRewards(for: userID) ?? []
+        
+        let today = Date()
+        let calendar = Calendar.current
+        
+        
+        let alreadyTaken = rewards.contains { reward in
+            guard reward.prizeId == prize.menuID else {
+                return false
+            }
+            
+            return calendar.isDate(reward.lastTaken!, inSameDayAs: today)
+        }
+        
+        prizeTakenToday =  alreadyTaken
+    }
+    
+}
 
 
 
@@ -17,6 +41,7 @@ struct PrizeCardView: View {
     @State private var imageURL: URL?
     
     @Environment(MainViewModel.self) var mViewModel
+    @State var vmodel: PrizeCardViewModel = PrizeCardViewModel()
     
     var body: some View {
         VStack{
@@ -68,11 +93,18 @@ struct PrizeCardView: View {
         .frame(width: 150, height: 200)
         .padding(5)
         .background(.white)
+        .overlay(content: {
+            Color.gray.opacity(vmodel.prizeTakenToday ? 0.5 : 0)
+        })
         .cornerRadius(8)
         .shadow(color:.gray, radius: 1, x: 0, y: 1)
         .padding(5)
         .task {
             await loadImage()
+            
+            if let user = mViewModel.user {
+                await vmodel.checkIfPrizeTakenToday(for: user.userId, prize: prize)
+            }
         }
         .opacity(mViewModel.user != nil ? 1 : 0.75)
         .overlay(alignment: .topLeading) {
@@ -81,6 +113,8 @@ struct PrizeCardView: View {
                     .foregroundStyle(.gray)
                     .padding()
             }
+            
+            
         }
     }
     

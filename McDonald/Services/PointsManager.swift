@@ -7,6 +7,9 @@
 import Foundation
 import FirebaseFirestore
 
+
+
+
 final class PointsManager {
     
     static let shared = PointsManager()

@@ -7,8 +7,21 @@
 
 import SwiftUI
 
+
+@MainActor
+@Observable class CouponViewModel{
+    
+    func upadateCoupons(for userID: String, coupon: Coupon) async {
+        await  RewardManager.shared.addCoupon(for: userID, coupon: coupon)
+    }
+    
+}
+
 struct CouponView: View {
     @Environment(MainViewModel.self) var mViewModel
+    
+    @State var vmodel: CouponViewModel = CouponViewModel()
+    
     let coupon: Coupon
     let rules = ["Do użycia 1x na transakcje","Zaloguj się / złóż konto"]
     @State var imageURL: URL?
@@ -67,6 +80,7 @@ struct CouponView: View {
                         .padding()
                 }
             }
+            
             Spacer()
             
             Text("Odbierz")
@@ -74,6 +88,19 @@ struct CouponView: View {
                  .frame(maxWidth: .infinity)
                  .background(mViewModel.user != nil ? .yellow : .gray, in: .rect)
                  .disabled(mViewModel.user == nil )
+                 .onTapGesture {
+                     if let userId = mViewModel.user?.userId {
+                         Task {
+                          
+                             await vmodel.upadateCoupons(for: userId, coupon: coupon)
+                           
+                         }
+                     }
+                     
+                     
+                     
+                 }
+
             
             
         }

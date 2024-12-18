@@ -16,7 +16,30 @@ import FirebaseFirestore
     var historyRecord: HistoryRecord?
     var showError: Bool = false
     var errorMessage: String?
+    var prizeTakenToday: Bool = false
     
+    func checkIfPrizeTakenToday(for userID: String, prize: MPrize) async {
+        let rewards = await RewardManager.shared.getRewards(for: userID) ?? []
+        
+        let today = Date()
+        let calendar = Calendar.current
+        
+        
+        let alreadyTaken = rewards.contains { reward in
+            guard reward.prizeId == prize.menuID else {
+                return false
+            }
+            
+            return calendar.isDate(reward.lastTaken!, inSameDayAs: today)
+        }
+        
+        prizeTakenToday =  alreadyTaken
+    }
+
+    
+    func updateRewards(for userID: String, prize: MPrize) async {
+        await  RewardManager.shared.setRewardTaken(for: userID, prize: prize)
+    }
     
     func updatePoints(for userID: String,prize points: Int) async {
         do {
@@ -89,6 +112,8 @@ import FirebaseFirestore
                         }
                         
                         VStack(alignment: .leading){
+                            
+                            
                             Text("Odbierz \(prize.title)")
                                 .font(.title)
                                 .bold()
@@ -135,12 +160,12 @@ import FirebaseFirestore
                         }
                     }
                 }
-                
+               
                 Text("Odbierz")
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(mViewModel.user != nil ? .yellow : .gray, in: .rect)
-                    .disabled(mViewModel.user == nil )
+                    .background(mViewModel.user != nil && !vmodel.prizeTakenToday  ? .yellow : .gray, in: .rect)
+                    .disabled(mViewModel.user == nil || !vmodel.prizeTakenToday )
                     .alert("Błąd", isPresented: $vmodel.showError, presenting: vmodel.errorMessage) { errorMessage in
                         Button("OK", role: .cancel) {
                             vmodel.showError = false
@@ -153,6 +178,7 @@ import FirebaseFirestore
                             vmodel.historyRecord = HistoryRecord(gained: false, date: Date(), points: prize.points)
                             Task {
                                 await vmodel.updatePoints(for: userId, prize: prize.points)
+                                await vmodel.updateRewards(for: userId, prize: prize)
                                 if let errorMessage = vmodel.errorMessage {
                                     vmodel.showError = true
                                 }
@@ -164,8 +190,16 @@ import FirebaseFirestore
                     }
                 
             }
+            .overlay {
+                Color.gray.opacity(vmodel.prizeTakenToday ? 0.3 : 0)
+            }
             .task {
                 await loadImage()
+                
+                if let user = mViewModel.user {
+                    await vmodel.checkIfPrizeTakenToday(for: user.userId, prize: prize)
+                }
+              
             }
         }
         

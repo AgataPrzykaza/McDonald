@@ -7,7 +7,33 @@
 
 import SwiftUI
 
+@MainActor
+@Observable class CouponCardViewModel{
+    
+    var couponTakenToday: Bool = false
+    
+    func checkIfPrizeTakenToday(for userID: String, coupon: Coupon) async {
+        let rewards = await RewardManager.shared.getCoupons(for: userID) ?? []
+        
+        let today = Date()
+        let calendar = Calendar.current
+        
+        
+        let alreadyTaken = rewards.contains { reward in
+            guard reward.prizeId == coupon.menuID else {
+                return false
+            }
+            
+            return calendar.isDate(reward.lastTaken!, inSameDayAs: today)
+        }
+        
+        couponTakenToday =  alreadyTaken
+    }
+}
+
 struct CouponCardView: View {
+    @Environment(MainViewModel.self) var mViewModel
+    @State var vmodel : CouponCardViewModel = CouponCardViewModel()
     
     var coupon: Coupon
     @State private var imageURL: URL?
@@ -43,9 +69,25 @@ struct CouponCardView: View {
                 .shadow(color: .gray.opacity(0.5), radius: 4, x: 0, y: 2)
             
         )
+        .overlay(content: {
+            Color.gray.opacity(vmodel.couponTakenToday ? 0.5 : 0)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            
+            if vmodel.couponTakenToday {
+                Text("Wykorzystany")
+                    .font(.title)
+                    .foregroundStyle(.black)
+                    .bold()
+                   
+
+            }
+        })
         .padding(5)
         .task {
             await loadImage()
+            if let user = mViewModel.user {
+                await vmodel.checkIfPrizeTakenToday(for: user.userId, coupon: coupon)
+            }
         }
     }
     
