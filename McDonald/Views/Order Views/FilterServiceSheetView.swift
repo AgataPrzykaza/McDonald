@@ -10,8 +10,7 @@ import SwiftUI
 struct FilterServiceSheetView: View{
     
     @Binding var showFilterServiceSheet: Bool
-//    @Binding var selectedFilters: [String]
-//    var filters: [String]
+
     @Environment(OrderViewModel.self) var orderModel
     
     func clearFilters() {
@@ -54,9 +53,9 @@ struct FilterServiceSheetView: View{
                         },
                         set: { isSelected in
                             if isSelected {
-                                orderModel.mapModel.selectedFilters.append(filter) // Dodaj filtr do tablicy
+                                orderModel.mapModel.selectedFilters.append(filter)
                             } else {
-                                orderModel.mapModel.selectedFilters.removeAll { $0 == filter } // Usuń filtr z tablicy
+                                orderModel.mapModel.selectedFilters.removeAll { $0 == filter } 
                             }
                         }
                     ) ){

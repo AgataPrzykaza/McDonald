@@ -12,7 +12,7 @@ struct OrderView: View {
     @State var showNextView: Bool = false
     @State var viewModel: OrderViewModel = .init()
     
-  //  @State  var viewState: ViewState = .map
+  
     
     var body: some View {
         

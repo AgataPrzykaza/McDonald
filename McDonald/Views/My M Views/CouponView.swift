@@ -11,6 +11,26 @@ import SwiftUI
 @MainActor
 @Observable class CouponViewModel{
     
+    var couponTakenToday: Bool = false
+    
+    func checkIfPrizeTakenToday(for userID: String, coupon: Coupon) async {
+        let rewards = await RewardManager.shared.getCoupons(for: userID) ?? []
+        
+        let today = Date()
+        let calendar = Calendar.current
+        
+        
+        let alreadyTaken = rewards.contains { reward in
+            guard reward.prizeId == coupon.menuID else {
+                return false
+            }
+            
+            return calendar.isDate(reward.lastTaken!, inSameDayAs: today)
+        }
+        
+        couponTakenToday =  alreadyTaken
+    }
+    
     func upadateCoupons(for userID: String, coupon: Coupon) async {
         await  RewardManager.shared.addCoupon(for: userID, coupon: coupon)
     }
@@ -79,6 +99,8 @@ struct CouponView: View {
                         .foregroundStyle(.gray)
                         .padding()
                 }
+                
+               
             }
             
             Spacer()
@@ -86,8 +108,8 @@ struct CouponView: View {
             Text("Odbierz")
                  .padding()
                  .frame(maxWidth: .infinity)
-                 .background(mViewModel.user != nil ? .yellow : .gray, in: .rect)
-                 .disabled(mViewModel.user == nil )
+                 .background(mViewModel.user != nil && !vmodel.couponTakenToday ? .yellow : .gray, in: .rect)
+                 .disabled(mViewModel.user == nil || vmodel.couponTakenToday)
                  .onTapGesture {
                      if let userId = mViewModel.user?.userId {
                          Task {
@@ -104,8 +126,16 @@ struct CouponView: View {
             
             
         }
+        .overlay(content: {
+            Color.gray.opacity(vmodel.couponTakenToday ? 0.5 : 0)
+        })
         .task {
             await loadImage()
+            
+            if let user = mViewModel.user {
+                await vmodel.checkIfPrizeTakenToday(for: user.userId, coupon: coupon)
+            }
+            
         }
     }
     

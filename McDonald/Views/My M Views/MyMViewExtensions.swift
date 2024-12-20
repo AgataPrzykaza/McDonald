@@ -7,6 +7,9 @@
 import SwiftUI
 
 extension MyMView{
+    
+    
+    
     var couponsHeaders: some View{
         
         VStack(alignment:.leading){
@@ -23,6 +26,7 @@ extension MyMView{
                     CouponCardView(coupon: coupon)
                     
                 }
+          
 
                
                 
@@ -31,6 +35,7 @@ extension MyMView{
             
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        
     }
 }
 extension MyMView{
