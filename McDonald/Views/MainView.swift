@@ -51,7 +51,7 @@ struct MainView: View {
             }
             
             Tab("McDelivery",systemImage: "truck.box.fill",value: .mcdelivery){
-                McDelivery()
+                DeliveryView()
             }
             
             Tab("Settings",systemImage: "heart",value: .settings){
