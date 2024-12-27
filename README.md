@@ -2,6 +2,13 @@
 
 FastFood App is a mobile application inspired by the McDonald's official app. It lets users explore the menu, place orders, collect rewards, and more. Designed to provide a seamless and intuitive fast-food ordering experience.
 ---
+## Technologies Behind the App 🛠️
+
+- **SwiftUI**
+- **Firebase Firestore, Storage, Authentication**
+- **MapKit**
+
+---
 
 ## Features 🚀
 
