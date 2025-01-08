@@ -7,9 +7,9 @@
 import Foundation
 import MapKit
 
-struct RestaurantLocation: Identifiable {
+struct RestaurantLocation: Identifiable, Codable {
     
-    let id: String
+    var id: String
     let name: String
     let latitude: Double
     let longitude: Double
@@ -30,6 +30,16 @@ struct RestaurantLocation: Identifiable {
             self.openHours = openHours
             self.services = services
         }
+    
+    enum CodingKeys: CodingKey {
+        case id
+        case name
+        case latitude
+        case longitude
+        case address
+        case openHours
+        case services
+    }
 }
 
 var mockRestaurants: [RestaurantLocation] = [

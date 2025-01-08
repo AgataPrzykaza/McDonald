@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 @MainActor
 @Observable
@@ -14,12 +15,14 @@ final class SettingsViewModel{
     func signOut() throws {
         try AuthManager.shared.signOut()
     }
+    
+    
 }
 
 struct SettingsView: View {
     @State private var viewModel = SettingsViewModel()
     @Environment(MainViewModel.self) var mViewModel
-   
+    
     
     @State var isAuthenticated: Bool = false
     var body: some View {
@@ -32,10 +35,10 @@ struct SettingsView: View {
                         do {
                             try viewModel.signOut()
                             await MainActor.run {
-                                       mViewModel.showSignInView = true
-                                       mViewModel.selectTab(.homePage)
+                                mViewModel.showSignInView = true
+                                mViewModel.selectTab(.homePage)
                                 mViewModel.user = nil
-                                   }
+                            }
                         } catch {
                             print(error)
                         }
@@ -43,7 +46,9 @@ struct SettingsView: View {
                     
                 }
             }
-         
+            
+        
+            
             
         }
         .onAppear{

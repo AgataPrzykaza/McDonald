@@ -19,15 +19,39 @@ struct Service: Hashable{
 struct MapView: View {
     
     @Environment(OrderViewModel.self) var orderModel
+    @StateObject private var locationManager = LocationManager()
     @State var showSheetMoreFIlters = false
     @State var showSearchView = false
  
-    //@Bindable  var vm: MapViewModel = .init()
+    @State var position: MapCameraPosition = MapCameraPosition.region(
+            MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: 52.2297, longitude: 21.0122), 
+                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            )
+        )
+    
+
    
     @State var selectedRestaurant: RestaurantLocation?
     @State var showLocationPreview: Bool = false
    
 
+
+    private func centerOnUserLocation() {
+          
+           if let location = locationManager.lastKnownLocation {
+              
+               position = MapCameraPosition.region(
+                   MKCoordinateRegion(
+                       center: location,
+                       span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                   )
+               )
+           } else {
+               print("Brak dostępu do lokalizacji użytkownika.")
+           }
+       }
+    
     var body: some View {
         
         VStack{
@@ -104,7 +128,9 @@ extension MapView {
     var map: some View {
         ZStack(alignment: .bottomTrailing){
             
-            Map(){
+            
+            
+            Map(position: $position){
                 if !orderModel.mapModel.filteredLocations.isEmpty{
                     ForEach(orderModel.mapModel.filteredLocations) { location in
                         
@@ -133,6 +159,10 @@ extension MapView {
                 }
                 
             }
+            .onAppear {
+                            locationManager.checkLocationAuthorization()
+                        }
+          
           
 
             VStack(alignment: .center){
@@ -140,7 +170,7 @@ extension MapView {
                     Spacer()
                     Button {
                         
-                        
+                        centerOnUserLocation()
                         
                     } label: {
                         Image(systemName: "location.fill")
@@ -191,7 +221,7 @@ extension MapView {
                 }
                 
             }
-            .frame(width:.infinity)
+            .frame(maxWidth:.infinity)
             .padding()
             
         }
