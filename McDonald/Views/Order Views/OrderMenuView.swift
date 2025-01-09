@@ -98,6 +98,7 @@ struct OrderMenuView: View {
             }
           
             .frame(maxWidth: .infinity,alignment: .leading)
+            .modifier(CartModifier())
             .onAppear(){
                 Task{
                     await orderModel.fetchCategories()
@@ -110,11 +111,14 @@ struct OrderMenuView: View {
 
 
 
+
+
 #Preview {
     NavigationStack{
         OrderMenuView()
             .environment(OrderViewModel())
     }
 }
+
 
 

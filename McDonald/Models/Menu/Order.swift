@@ -7,31 +7,56 @@
 
 import FirebaseFirestore
 
+enum OrderType: String, Codable {
+    case takeAway
+    case delivery
+    case onPlace
+}
+
 class Order: Codable {
     
-    var id: Int
-    var oderNumber: Int
-    var order: [MenuItem] = []
+    var id: String
+    var orderNumber: Int
+    var items: [MenuItem] = []
     var customerID: String
+    var restaurantID: String
+    var orderType: OrderType
+    var sum: Double = 0
     
-    init(id: Int, oderNumber: Int, order: [MenuItem], customerID: String) {
+    init() {
+        id = ""
+        orderNumber = 0
+        orderType = .onPlace
+        items = []
+        customerID = ""
+        restaurantID = ""
+        sum = 0
+        
+    }
+    
+    init(id: String, oderNumber: Int, order: [MenuItem], customerID: String,restaurantID: String, orderType: OrderType,sum: Double) {
         self.id = id
-        self.oderNumber = oderNumber
-        self.order = order
+        self.orderNumber = oderNumber
+        self.items = order
         self.customerID = customerID
+        self.restaurantID = restaurantID
+        self.orderType = orderType
+        self.sum = sum
     }
     
     func add(_ item: MenuItem) {
-        order.append(item)
+        items.append(item)
+        sum += item.price
     }
     
     func remove(_ item: MenuItem) {
-        order.removeAll(where: { $0.id == item.id })
+        items.removeAll(where: { $0.id == item.id })
+        sum -= item.price
     }
     
     func change(_ item: MenuItem, to newItem: MenuItem) {
-        order.removeAll(where: { $0.id == item.id })
-        order.append(newItem)
+        items.removeAll(where: { $0.id == item.id })
+        items.append(newItem)
     }
     
     enum OderCodingKeys: String, CodingKey {
@@ -39,23 +64,32 @@ class Order: Codable {
         case oderNumber
         case order
         case customerID
+        case restaurantID
+        case orderType
+        case sum
     }
     
     
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: OderCodingKeys.self)
-        self.id = try container.decode(Int.self, forKey: .id)
-        self.oderNumber = try container.decode(Int.self, forKey: .oderNumber)
-        self.order = try container.decode([MenuItem].self, forKey: .order)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.orderNumber = try container.decode(Int.self, forKey: .oderNumber)
+        self.items = try container.decode([MenuItem].self, forKey: .order)
         self.customerID = try container.decode(String.self, forKey: .customerID)
+        self.restaurantID = try container.decode(String.self, forKey: .restaurantID)
+        self.orderType = try container.decode(OrderType.self, forKey: .orderType)
+        self.sum = try container.decode(Double.self, forKey: .sum)
     }
     
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: OderCodingKeys.self)
         try container.encode(id, forKey: .id)
-        try container.encode(oderNumber, forKey: .oderNumber)
-        try container.encode(order, forKey: .order)
+        try container.encode(orderNumber, forKey: .oderNumber)
+        try container.encode(items, forKey: .order)
         try container.encode(customerID, forKey: .customerID)
+        try container.encode(restaurantID, forKey: .restaurantID)
+        try container.encode(orderType, forKey: .orderType)
+        try container.encode(sum, forKey: .sum)
     }
     
 }

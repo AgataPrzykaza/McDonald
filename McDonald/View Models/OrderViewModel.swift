@@ -4,12 +4,13 @@ import SwiftUI
 
 
 enum ViewState {
-    case map, order, searchLocation,intro
+    case map, order, searchLocation,intro,cart
 }
 
 @Observable
 class OrderViewModel{
     
+    var order: Order?
     var mapModel: MapViewModel
     var rootView: ViewState
     var navigationPath: NavigationPath
@@ -19,11 +20,13 @@ class OrderViewModel{
     
     var menuItems: [MenuItem] = []
     var categories: [Category] = []
+   
     
     init() {
         self.mapModel = MapViewModel()
         self.rootView = .intro
         self.navigationPath = NavigationPath()
+       
     }
     
     

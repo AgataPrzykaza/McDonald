@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 enum ButtonPosition{
     case center
@@ -16,7 +17,38 @@ struct LocationCardView: View {
     @Environment(OrderViewModel.self) var orderModel
     var restaurant: RestaurantLocation
     var buttonPosition: ButtonPosition
+    
+    @State private var distance: String = "##"
    
+    func haversineDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double) -> Double {
+            let R = 6371.0 // Promień Ziemi w kilometrach
+            
+            let φ1 = lat1 * .pi / 180
+            let φ2 = lat2 * .pi / 180
+            let Δφ = (lat2 - lat1) * .pi / 180
+            let Δλ = (lon2 - lon1) * .pi / 180
+            
+            let a = sin(Δφ / 2) * sin(Δφ / 2) +
+                    cos(φ1) * cos(φ2) *
+                    sin(Δλ / 2) * sin(Δλ / 2)
+            let c = 2 * atan2(sqrt(a), sqrt(1 - a))
+            
+            return R * c
+        }
+        
+    func updateDistance() {
+         
+           
+           let dist = haversineDistance(
+            lat1: orderModel.mapModel.currentLocation.latitude,
+            lon1: orderModel.mapModel.currentLocation.longitude,
+               lat2: restaurant.latitude,
+               lon2: restaurant.longitude
+           )
+           
+           distance = String(format: "%.2f km", dist)
+       }
+    
     var body: some View {
         VStack(alignment: .leading){
             
@@ -27,7 +59,7 @@ struct LocationCardView: View {
                 
                 Spacer()
                 
-                Text("odleglosc")
+                Text(distance)
                     .padding(3)
                     .background(.gray.opacity(0.3),in: .rect(cornerRadius: 10))
             }
@@ -98,6 +130,9 @@ struct LocationCardView: View {
         }
         .frame(height: 100)
         .padding([.bottom,.top])
+        .onAppear(){
+            updateDistance()
+        }
     }
 }
 

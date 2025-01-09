@@ -26,7 +26,7 @@ struct MapView: View {
     @State var position: MapCameraPosition = MapCameraPosition.region(
             MKCoordinateRegion(
                 center: CLLocationCoordinate2D(latitude: 52.2297, longitude: 21.0122), 
-                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
             )
         )
     
@@ -44,7 +44,7 @@ struct MapView: View {
                position = MapCameraPosition.region(
                    MKCoordinateRegion(
                        center: location,
-                       span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                       span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
                    )
                )
            } else {
@@ -161,6 +161,7 @@ extension MapView {
             }
             .onAppear {
                             locationManager.checkLocationAuthorization()
+                orderModel.mapModel.currentLocation = position.region?.center ?? CLLocationCoordinate2D(latitude: 51, longitude: 19)
                         }
           
           
@@ -171,6 +172,10 @@ extension MapView {
                     Button {
                         
                         centerOnUserLocation()
+                        
+                        orderModel.mapModel.currentLocation = position.region?.center ?? CLLocationCoordinate2D(latitude: 51, longitude: 19)
+                        
+                        showLocationPreview = false
                         
                     } label: {
                         Image(systemName: "location.fill")

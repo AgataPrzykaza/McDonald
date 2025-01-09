@@ -6,12 +6,13 @@
 //
 
 import Foundation
-
+import MapKit
 
 @Observable
 class MapViewModel{
     
     var selectedFilters: [String] = []
+    var currentLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 51.91944444444444, longitude: 19.180555555555555)
     
     var filters: [String] = ["McCafe", "McDrive", "Otwarte", "Śniadania", "McDelivery", "Zamów i odbierz"]
     var filteredLocations: [RestaurantLocation] = mockRestaurants

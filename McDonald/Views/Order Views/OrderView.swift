@@ -42,6 +42,8 @@ struct OrderView: View {
                     SearchLocationView()
                 case .intro:
                     OrderIntroView()
+                case .cart:
+                    CartView()
                 }
             }
             
