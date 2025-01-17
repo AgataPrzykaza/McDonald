@@ -28,6 +28,12 @@ struct SettingsView: View {
     var body: some View {
         List{
             
+            Button("menu"){
+                Task{
+                     await MenuManager.shared.saveMenu()
+                }
+            }
+            
             if isAuthenticated {
                 Button("Wyloguj się"){
                     

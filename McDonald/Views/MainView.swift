@@ -30,6 +30,7 @@ struct MainView: View {
     
     
     
+    
     var body: some View {
         
         @Bindable var  mainViewModel = mViewModel
@@ -59,7 +60,7 @@ struct MainView: View {
             }
             
             Tab("McDelivery",systemImage: "heart",value: .settings){
-                McDelivery()
+                DeliveryView()
             }
         
         }

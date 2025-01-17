@@ -11,6 +11,9 @@ import SwiftUI
 struct CartIconView: View {
     
     @Environment(OrderViewModel.self) var orderModel
+    @Environment(MainViewModel.self) var mViewModel
+    
+   
     
     var body: some View {
         Image(systemName: "cart.circle.fill")
@@ -30,6 +33,9 @@ struct CartIconView: View {
                 
             }
             .padding(.horizontal,15)
+            
+           
+           
     }
 }
 

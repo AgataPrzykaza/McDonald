@@ -6,18 +6,19 @@
 //
 
 import FirebaseFirestore
-
+import Foundation
 enum OrderType: String, Codable {
     case takeAway
     case delivery
     case onPlace
 }
 
+@Observable
 class Order: Codable {
     
     var id: String
     var orderNumber: Int
-    var items: [MenuItem] = []
+    var items: [MenuItem ] = []
     var customerID: String
     var restaurantID: String
     var orderType: OrderType
@@ -45,13 +46,27 @@ class Order: Codable {
     }
     
     func add(_ item: MenuItem) {
+        
         items.append(item)
+
+           sum += item.price
+       }
+    
+    func addPrize( item: MenuItem){
+        items.append(item)
+    }
+    
+    func addCoupon(item: MenuItem){
+        items.append(item)
+
         sum += item.price
     }
     
     func remove(_ item: MenuItem) {
-        items.removeAll(where: { $0.id == item.id })
-        sum -= item.price
+        if let index = items.firstIndex(where: { $0.id == item.id }) {
+            items.remove(at: index)
+            sum -= item.price
+        }
     }
     
     func change(_ item: MenuItem, to newItem: MenuItem) {
@@ -74,7 +89,7 @@ class Order: Codable {
         let container = try decoder.container(keyedBy: OderCodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
         self.orderNumber = try container.decode(Int.self, forKey: .oderNumber)
-        self.items = try container.decode([MenuItem].self, forKey: .order)
+        self.items = try container.decode([MenuItem ].self, forKey: .order)
         self.customerID = try container.decode(String.self, forKey: .customerID)
         self.restaurantID = try container.decode(String.self, forKey: .restaurantID)
         self.orderType = try container.decode(OrderType.self, forKey: .orderType)

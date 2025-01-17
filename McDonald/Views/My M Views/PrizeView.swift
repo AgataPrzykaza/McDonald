@@ -35,7 +35,7 @@ import FirebaseFirestore
         
         prizeTakenToday =  alreadyTaken
     }
-
+    
     
     func updateRewards(for userID: String, prize: MPrize) async {
         await  RewardManager.shared.setRewardTaken(for: userID, prize: prize)
@@ -62,7 +62,7 @@ import FirebaseFirestore
                 throw PointsError.notEnoughPoints
             }
         }catch let error as PointsError {
-           
+            
             throw PointsError.notEnoughPoints
         }
         catch let error as NSError {
@@ -79,137 +79,156 @@ import FirebaseFirestore
         
     }
 }
+
+struct PrizeView: View {
     
-    struct PrizeView: View {
+    @Environment(MainViewModel.self) var mViewModel
+   // @Environment(OrderViewModel.self) var orderModel
+    
+    @Environment(\.dismiss) var dismiss
+    
+    @State var vmodel: PrizeViewModel = PrizeViewModel()
+    
+    let prize: MPrize
+    @State var imageURL: URL?
+    
+    @State var rules: [String] = ["Zaloguj się / Załóż konto"]
+    
+    var body: some View {
         
-        @Environment(MainViewModel.self) var mViewModel
-        @State var vmodel: PrizeViewModel = PrizeViewModel()
         
-        let prize: MPrize
-        @State var imageURL: URL?
         
-        @State var rules: [String] = ["Zaloguj się / Załóż konto"]
-        
-        var body: some View {
-            
-            VStack{
-                ScrollView{
-                    VStack(){
-                        AsyncImage(url: imageURL) { image in
-                            image
-                                .resizable()
-                                .frame(width: 350, height: 250)
-                                .scaledToFit()
-                            
-                        } placeholder: {
-                            Rectangle()
-                                .foregroundStyle(.white)
-                                .frame( height: 250)
-                                .scaledToFit()
-                                .overlay {
-                                    ProgressView()
-                                }
-                        }
+        VStack{
+            ScrollView{
+                VStack(){
+                    AsyncImage(url: imageURL) { image in
+                        image
+                            .resizable()
+                            .frame(width: 350, height: 250)
+                            .scaledToFit()
                         
-                        VStack(alignment: .leading){
-                            
-                            
-                            Text("Odbierz \(prize.title)")
-                                .font(.title)
-                                .bold()
-                            
-                            
-                            Text("\(prize.points) pkt")
-                                .bold()
-                                .foregroundStyle(.black)
-                                .font(.headline)
-                                .bold()
-                                .padding(5)
-                                .padding(.horizontal,5)
-                                .background(.white, in: .capsule)
-                                .padding(1)
-                                .background(LinearGradient(gradient: Gradient(colors: [.red.mix(with: .black, by: 0.4), .yellow.mix(with: .red, by: 0.2)]), startPoint: .leading, endPoint: .trailing), in: .capsule)
-                            
-                            Text("Zasady")
-                                .bold()
-                                .font(.headline)
-                                .padding(.top)
-                            
-                            ForEach(rules,id: \.self){ rule in
-                                Text(rule)
-                                    .font(.subheadline)
-                                Divider()
-                                    .padding(.horizontal)
-                                
+                    } placeholder: {
+                        Rectangle()
+                            .foregroundStyle(.white)
+                            .frame( height: 250)
+                            .scaledToFit()
+                            .overlay {
+                                ProgressView()
                             }
-                            .padding(.top,5)
+                    }
+                    
+                    VStack(alignment: .leading){
+                        
+                        
+                        Text("Odbierz \(prize.title)")
+                            .font(.title)
+                            .bold()
+                        
+                        
+                        Text("\(prize.points) pkt")
+                            .bold()
+                            .foregroundStyle(.black)
+                            .font(.headline)
+                            .bold()
+                            .padding(5)
+                            .padding(.horizontal,5)
+                            .background(.white, in: .capsule)
+                            .padding(1)
+                            .background(LinearGradient(gradient: Gradient(colors: [.red.mix(with: .black, by: 0.4), .yellow.mix(with: .red, by: 0.2)]), startPoint: .leading, endPoint: .trailing), in: .capsule)
+                        
+                        Text("Zasady")
+                            .bold()
+                            .font(.headline)
+                            .padding(.top)
+                        
+                        ForEach(rules,id: \.self){ rule in
+                            Text(rule)
+                                .font(.subheadline)
+                            Divider()
+                                .padding(.horizontal)
                             
                         }
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        Spacer()
-                        
+                        .padding(.top,5)
                         
                     }
-                    .padding(5)
-                    .overlay(alignment: .topTrailing) {
-                        if mViewModel.user == nil {
-                            Image(systemName: "lock.fill")
-                                .foregroundStyle(.gray)
-                                .padding()
-                        }
-                    }
-                }
-               
-                Text("Odbierz")
                     .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(mViewModel.user != nil && !vmodel.prizeTakenToday  ? .yellow : .gray, in: .rect)
-                    .disabled(mViewModel.user == nil || !vmodel.prizeTakenToday )
-                    .alert("Błąd", isPresented: $vmodel.showError, presenting: vmodel.errorMessage) { errorMessage in
-                        Button("OK", role: .cancel) {
-                            vmodel.showError = false
-                        }
-                    } message: { errorMessage in
-                        Text(errorMessage)
-                    }
-                    .onTapGesture {
-                        if let userId = mViewModel.user?.userId {
-                            vmodel.historyRecord = HistoryRecord(gained: false, date: Date(), points: prize.points)
-                            Task {
-                                await vmodel.updatePoints(for: userId, prize: prize.points)
-                                await vmodel.updateRewards(for: userId, prize: prize)
-                                if let errorMessage = vmodel.errorMessage {
-                                    vmodel.showError = true
-                                }
-                            }
-                        }
-                        
-                        
-                        
-                    }
-                
-            }
-            .overlay {
-                Color.gray.opacity(vmodel.prizeTakenToday ? 0.3 : 0)
-            }
-            .task {
-                await loadImage()
-                
-                if let user = mViewModel.user {
-                    await vmodel.checkIfPrizeTakenToday(for: user.userId, prize: prize)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Spacer()
+                    
+                    
                 }
-              
+                .padding(5)
+                .overlay(alignment: .topTrailing) {
+                    if mViewModel.user == nil {
+                        Image(systemName: "lock.fill")
+                            .foregroundStyle(.gray)
+                            .padding()
+                    }
+                }
             }
+            
+            Text("Odbierz")
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(mViewModel.user != nil && !vmodel.prizeTakenToday  ? .yellow : .gray, in: .rect)
+                .disabled(mViewModel.user == nil || !vmodel.prizeTakenToday )
+                .alert("Błąd", isPresented: $vmodel.showError, presenting: vmodel.errorMessage) { errorMessage in
+                    Button("OK", role: .cancel) {
+                        vmodel.showError = false
+                    }
+                } message: { errorMessage in
+                    Text(errorMessage)
+                }
+                .onTapGesture {
+                    if let userId = mViewModel.user?.userId {
+                        
+                        mViewModel.usedPrizes.append(prize)
+                        
+                        vmodel.historyRecord = HistoryRecord(gained: false, date: Date(), points: prize.points)
+                        Task {
+                            await vmodel.updatePoints(for: userId, prize: prize.points)
+                            await vmodel.updateRewards(for: userId, prize: prize)
+                            
+                            
+                            
+                            if let errorMessage = vmodel.errorMessage {
+                                vmodel.showError = true
+                            } else {
+                               
+                                dismiss()
+                            }
+                            
+                            
+                        }
+                        
+                        
+                    }
+                    
+                    
+                    
+                }
+            
         }
-        
-        func loadImage() async {
-            do {
-                imageURL = try await FirestoreService().fetchImageURL(for: prize.imagePath)
-            } catch {
-                print("Error fetching image URL: \(error)")
+        .overlay {
+            Color.gray.opacity(vmodel.prizeTakenToday ? 0.3 : 0)
+        }
+        .task {
+            await loadImage()
+            
+            if let user = mViewModel.user {
+                await vmodel.checkIfPrizeTakenToday(for: user.userId, prize: prize)
             }
+            
         }
     }
     
-    
+    func loadImage() async {
+        do {
+            imageURL = try await FirestoreService().fetchImageURL(for: prize.imagePath)
+        } catch {
+            print("Error fetching image URL: \(error)")
+        }
+    }
+}
+
+

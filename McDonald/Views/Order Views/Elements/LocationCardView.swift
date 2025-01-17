@@ -135,9 +135,9 @@ struct LocationCardView: View {
         }
     }
 }
-
-#Preview {
-    LocationCardView( restaurant: mockRestaurants.first!, buttonPosition: .right)
-        .padding()
-        .environment(OrderViewModel())
-}
+//
+//#Preview {
+//    LocationCardView( restaurant: mockRestaurants.first!, buttonPosition: .right)
+//        .padding()
+//        .environment(OrderViewModel())
+//}

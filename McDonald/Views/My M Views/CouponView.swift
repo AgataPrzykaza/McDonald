@@ -39,6 +39,7 @@ import SwiftUI
 
 struct CouponView: View {
     @Environment(MainViewModel.self) var mViewModel
+    @Environment(\.dismiss) var dismiss
     
     @State var vmodel: CouponViewModel = CouponViewModel()
     
@@ -112,9 +113,13 @@ struct CouponView: View {
                  .disabled(mViewModel.user == nil || vmodel.couponTakenToday)
                  .onTapGesture {
                      if let userId = mViewModel.user?.userId {
+                         
+                         mViewModel.usedCoupons.append(coupon)
+                         
                          Task {
                           
                              await vmodel.upadateCoupons(for: userId, coupon: coupon)
+                             dismiss()
                            
                          }
                      }

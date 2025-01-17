@@ -87,9 +87,8 @@ struct OrderMenuView: View {
                 }
                 .padding(.top)
                 .navigationDestination(for: Category.self) { category in
-                    CategoryView()
-                        .navigationTitle(category.name)
-                        .navigationBarTitleDisplayMode(.inline)
+                    CategoryView(category: category)
+                        .navigationBarBackButtonHidden()
                 }
                 
                 
@@ -98,10 +97,21 @@ struct OrderMenuView: View {
             }
           
             .frame(maxWidth: .infinity,alignment: .leading)
-            .modifier(CartModifier())
+            .overlay(alignment: .bottomTrailing, content: {
+                Button {
+                    orderModel.navigationPath.append(ViewState.cart)
+                } label: {
+                    CartIconView()
+                }
+
+                
+               
+            })
+            //.modifier(CartModifier())
             .onAppear(){
                 Task{
                     await orderModel.fetchCategories()
+                    await orderModel.fetchMenu()
                 }
                 
             }

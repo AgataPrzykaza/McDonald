@@ -29,6 +29,16 @@ struct UserQRCodeView: View {
     
     let userID: String
     
+    func abbreviatedUserID(_ userID: String, visibleCount: Int = 4) -> String {
+        guard userID.count > visibleCount * 2 else { return userID }
+        let start = userID.prefix(visibleCount)
+        let end = userID.suffix(visibleCount)
+        return "\(start)...\(end)"
+    }
+
+   
+
+    
     var body: some View {
         
         VStack{
@@ -38,12 +48,12 @@ struct UserQRCodeView: View {
                     if let qrImage = userID.generateQRCode() {
                         Image(uiImage: qrImage)
                             .resizable()
-                            .interpolation(.none) // Zapewnia lepszą jakość obrazu
+                            .interpolation(.none) 
                             .scaledToFit()
                             .frame(width: 150, height: 150)
                         
                         
-                        Text(userID)
+                        Text(abbreviatedUserID(userID))
                             .monospaced()
                             .font(.headline)
                             .fontWeight(.heavy)

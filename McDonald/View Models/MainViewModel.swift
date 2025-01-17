@@ -15,6 +15,9 @@ import Foundation
     
     var user: UserDB? = nil
     
+    var usedPrizes: [MPrize] = []
+    var usedCoupons: [Coupon] = []
+    
     func selectTab(_ tab: Tabs){
         selectedTab = tab
     }
@@ -22,6 +25,9 @@ import Foundation
     func shoSignInToggle(){
         showSignInView.toggle()
     }
+    
+    
+    
     
     func loadCurrentUser() async throws {
         

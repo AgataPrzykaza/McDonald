@@ -10,6 +10,23 @@ import FirebaseFirestore
 struct Category: Codable, Hashable{
     let name: String
     let imagePath: String
+    var category: Category
+   
+    
+    
+    
+    enum Category: String, Codable {
+        case burgers
+        case drink
+        case coffee
+        case wrap
+        case salad
+        case chicken
+        case fries
+        case set
+        case sides
+        case desserts
+    }
 }
 
 final class CategoriesManager{

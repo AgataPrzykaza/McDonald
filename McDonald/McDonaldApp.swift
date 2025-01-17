@@ -25,6 +25,7 @@ struct McDonaldApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State var viewModel: MainViewModel = MainViewModel()
     
+    
     var body: some Scene {
         WindowGroup {
             MainView()

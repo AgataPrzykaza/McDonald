@@ -44,7 +44,7 @@ struct MyMView: View {
                     
                     
                     if let user = mViewModel.user {
-                        UserQRCodeView(userID: userID)
+                        UserQRCodeView(userID: user.userId)
                             .background(content: {
                                 Color.white
                                     .clipShape(.rect(cornerRadius: 15))
@@ -120,7 +120,9 @@ struct MyMView: View {
                     Spacer()
                 }
                 .sheet(isPresented: $showQRSheet) {
-                    QRSheet(userID: userID)
+                    if let user = mViewModel.user {
+                        QRSheet(userID: user.userId)
+                    }
                 }
                 
             }

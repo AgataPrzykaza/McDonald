@@ -19,7 +19,7 @@ final class MenuManager{
     private let menuCollection = Firestore.firestore().collection("menu")
     
   
-    func fetchMenu() async throws-> [MenuItem]? {
+    func fetchMenu() async throws-> [MenuItem] {
       
         let snapshot = try await menuCollection.getDocuments()
             
@@ -32,7 +32,25 @@ final class MenuManager{
        
     }
     
+  
     
+        func saveMenu() async {
+    
+    
+            for item in menuItems {
+                do {
+    
+                    let docRef = menuCollection.document()
+    
+    
+                    try docRef.setData(from: item)
+    
+                  
+                } catch let error {
+                    print("Error writing meunItem to Firestore: \(error)")
+                }
+            }
+        }
 
 
     

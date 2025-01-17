@@ -12,6 +12,13 @@ struct QRSheet: View {
     let userID: String
     @Environment(\.dismiss) var dismiss
     
+    func abbreviatedUserID(_ userID: String, visibleCount: Int = 4) -> String {
+        guard userID.count > visibleCount * 2 else { return userID }
+        let start = userID.prefix(visibleCount)
+        let end = userID.suffix(visibleCount)
+        return "\(start)...\(end)"
+    }
+    
     var body: some View {
         NavigationStack{
             
@@ -46,7 +53,7 @@ struct QRSheet: View {
                                 .frame(width: 150, height: 150)
                             
                             
-                            Text(userID)
+                            Text(abbreviatedUserID(userID))
                                 .monospaced()
                                 .font(.headline)
                                 .fontWeight(.heavy)

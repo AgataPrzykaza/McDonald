@@ -15,9 +15,24 @@ class MapViewModel{
     var currentLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 51.91944444444444, longitude: 19.180555555555555)
     
     var filters: [String] = ["McCafe", "McDrive", "Otwarte", "Śniadania", "McDelivery", "Zamów i odbierz"]
-    var filteredLocations: [RestaurantLocation] = mockRestaurants
+    
+    var restaurants: [RestaurantLocation] = []
+    var filteredLocations: [RestaurantLocation] = []
     
     var selectedLocation: RestaurantLocation?
+    
+    init(){
+        Task{
+            do {
+                filteredLocations =  try await RestaurantsManager.shared.getRestaurants()
+                restaurants =  try await RestaurantsManager.shared.getRestaurants()
+            }
+            catch{
+                print("Error while fetching restaurants: \(error)")
+            }
+        }
+       
+    }
     
      func toggleFilter(_ filter: String) {
           
@@ -32,9 +47,9 @@ class MapViewModel{
     
      func updateFilteredLocations() {
          if self.selectedFilters.isEmpty {
-             self.filteredLocations = mockRestaurants
+             self.filteredLocations = restaurants
                } else {
-                   self.filteredLocations = mockRestaurants.filter { location in
+                   self.filteredLocations = restaurants.filter { location in
                        !Set(self.selectedFilters).isDisjoint(with: location.services)
                    }
                }
