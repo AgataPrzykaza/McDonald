@@ -15,7 +15,7 @@ class MenuItem: Codable, Identifiable, Hashable{
     var ingredients: [String]?
     var category: Category
     var sauce: [String]?
-    var imagePath: String?
+    var imagePath: String
     var size: Size?
    
  
@@ -47,7 +47,7 @@ class MenuItem: Codable, Identifiable, Hashable{
             hasher.combine(menuID)
         }
     
-    init(itemNumber: String,name: String, price: Double, category: Category,ingredients: [String], sauce: [String]? = nil, imagePath: String? = nil,size: Size? = nil) {
+    init(itemNumber: String,name: String, price: Double, category: Category,ingredients: [String], sauce: [String]? = nil, imagePath: String,size: Size? = nil) {
         self.menuID = itemNumber
         self.name = name
         self.price = price
@@ -58,11 +58,12 @@ class MenuItem: Codable, Identifiable, Hashable{
         self.size = size
     }
     
-    init(name: String,itemNumer: String, price: Double, category: Category){
+    init(name: String,itemNumer: String, price: Double, category: Category,imagePath: String){
         self.menuID = itemNumer
         self.name = name
         self.price = price
         self.category = category
+        self.imagePath = imagePath
     }
     
     
@@ -86,7 +87,7 @@ class MenuItem: Codable, Identifiable, Hashable{
         self.ingredients = try container.decodeIfPresent([String].self, forKey: .ingredients) ?? []
         self.category = try container.decode(Category.self, forKey: .category)
         self.sauce = try container.decodeIfPresent([String].self, forKey: .sauce)
-        self.imagePath = try container.decodeIfPresent(String.self, forKey: .imagePath)
+        self.imagePath = try container.decode(String.self, forKey: .imagePath)
         self.size = try container.decodeIfPresent(Size.self, forKey: .size)
         
     }

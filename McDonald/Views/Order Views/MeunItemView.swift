@@ -14,14 +14,41 @@ struct MeunItemView: View {
     @Environment(\.dismiss) var dismiss
     
     let item: MenuItem
+    @State var imageURL: URL?
+    
+    func loadImage() async {
+        do {
+            imageURL = try await FirestoreService().fetchImageURL(for: item.imagePath)
+        } catch {
+            print("Error fetching image URL: \(error)")
+        }
+    }
     
     var body: some View {
         VStack{
             ScrollView{
                 VStack(alignment:.leading){
                     
-                    Rectangle()
-                        .frame(height: 300)
+                    
+                    
+                    AsyncImage(url: imageURL) { image in
+                        image
+                            .resizable()
+                            .frame(width: 300, height: 250)
+                            .scaledToFit()
+                            .clipShape(.rect(cornerRadius: 10))
+                        
+                    } placeholder: {
+                        Rectangle()
+                            .foregroundStyle(.white)
+                            .frame( height: 250)
+                            .scaledToFit()
+                            .overlay {
+                                ProgressView()
+                            }
+                    }
+                    .frame(maxWidth: .infinity,alignment: .center)
+                    
                     
                     HStack{
                         Text(item.name)
@@ -62,6 +89,9 @@ struct MeunItemView: View {
             
         }
         .padding()
+        .task{
+            await loadImage()
+        }
         
         
         Divider()
@@ -113,7 +143,7 @@ struct MeunItemView: View {
         price: 5.99,
         category: .drink,
         ingredients: ["sada","sad","sad"],
-        imagePath: "https://example.com/images/coca-cola-small.jpg",
+        imagePath: "menu/005.jpg",
         size: .small
     ))
     .environment(MainViewModel())

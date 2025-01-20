@@ -23,6 +23,8 @@ struct CategoryView: View {
                 .font(.title)
                 .bold()
             
+            
+            
             ScrollView{
                 VStack(alignment: .leading){
                    
@@ -88,17 +90,55 @@ struct MenuItemHeadline: View {
     
     let item : MenuItem
     
+    @State var imageURL: URL?
+    
+    func loadImage() async {
+        do {
+            imageURL = try await FirestoreService().fetchImageURL(for: item.imagePath)
+        } catch {
+            print("Error fetching image URL: \(error)")
+        }
+    }
+    
     var body: some View {
         HStack{
-            Rectangle()
-                .frame(width: 60, height: 60)
+            
+            AsyncImage(url: imageURL) { image in
+                image
+                    .resizable()
+                    .frame(width: 60, height: 50)
+                    .scaledToFit()
+                    .clipShape(.rect(cornerRadius: 10))
+                
+            } placeholder: {
+                Rectangle()
+                    .foregroundStyle(.white)
+                    .frame( height: 50)
+                    .scaledToFit()
+                    .overlay {
+                        ProgressView()
+                    }
+            }
             
             VStack(alignment: .leading) {
-                Text(item.name)
-                    .bold()
-                    .font(.headline)
+                HStack{
+                    Text(item.name)
+                        
+                    
+                    if item.size != nil{
+                        if let size = item.size {
+                            Text("\(size.rawValue.prefix(1).uppercased())")
+                        }
+                    }
+                }
+                .bold()
+                .font(.headline)
+                
                 Text(String(format: "%.2f zł", item.price))
                     .font(.subheadline)
+            }
+            .task {
+                await loadImage()
             }
             
             Spacer()

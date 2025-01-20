@@ -29,6 +29,7 @@ struct CartView: View {
     }
     
     
+    
     var body: some View {
         
         @Bindable var  viewModel = orderModel
@@ -65,30 +66,7 @@ struct CartView: View {
                         
                         ForEach(viewModel.order!.items){ item in
                             
-                            HStack{
-                                Text(item.name)
-                                    .fontWeight(.heavy)
-                                
-                                Text(String(format: "%.2f zł",item.price))
-                                    .bold()
-                                
-                                if item.size != nil{
-                                    if let size = item.size {
-                                        Text("\(size.rawValue.prefix(1).uppercased())")
-                                            .bold()
-                                    }
-                                }
-                                
-                                
-                                Spacer()
-                                Button(role: .destructive) {
-                                    viewModel.removeFromCart(menuItem: item)
-                                    
-                                } label: {
-                                    Image(systemName: "minus")
-                                }
-                            }
-                            .padding(.horizontal)
+                            ExtractedView( item: item)
                             
                         }
                     }
@@ -129,12 +107,23 @@ struct CartView: View {
             
             HStack(alignment: .center){
                 
-                Rectangle()
-                    .foregroundStyle(.white)
-                    .overlay {
-                        Text("Zamów więcej")
-                            .padding(.horizontal)
-                    }
+                
+                Button {
+                    orderModel.rootView = .order
+                    
+                    orderModel.navigationPath.removeLast(orderModel.navigationPath.count)
+                    
+                } label: {
+                    Rectangle()
+                        .foregroundStyle(.white)
+                        .overlay {
+                            Text("Zamów więcej")
+                                .padding(.horizontal)
+                                .foregroundStyle(.black)
+                        }
+                }
+                
+              
                 
                 Spacer()
                 
@@ -227,4 +216,70 @@ extension CartView {
     .environment(OrderViewModel())
     .environment(MainViewModel())
     
+}
+
+struct ExtractedView: View {
+    
+    @Environment(OrderViewModel.self) var orderModel
+    
+    var item: MenuItem
+    
+    
+    @State var imageURL: URL?
+    
+    func loadImage() async {
+        do {
+            imageURL = try await FirestoreService().fetchImageURL(for: item.imagePath)
+        } catch {
+            print("Error fetching image URL: \(error)")
+        }
+    }
+    
+    var body: some View {
+        HStack{
+            
+            AsyncImage(url: imageURL) { image in
+                image
+                    .resizable()
+                    .frame(width: 50, height: 40)
+                    .scaledToFit()
+                    .clipShape(.rect(cornerRadius: 10))
+                
+            } placeholder: {
+                Rectangle()
+                    .foregroundStyle(.white)
+                    .frame( height: 50)
+                    .scaledToFit()
+                    .overlay {
+                        ProgressView()
+                    }
+            }
+            
+            Text(item.name)
+                .fontWeight(.heavy)
+            
+            Text(String(format: "%.2f zł",item.price))
+                .bold()
+            
+            if item.size != nil{
+                if let size = item.size {
+                    Text("\(size.rawValue.prefix(1).uppercased())")
+                        .bold()
+                }
+            }
+            
+            
+            Spacer()
+            Button(role: .destructive) {
+                orderModel.removeFromCart(menuItem: item)
+                
+            } label: {
+                Image(systemName: "minus")
+            }
+        }
+        .padding(.horizontal)
+        .task {
+            await loadImage()
+        }
+    }
 }
