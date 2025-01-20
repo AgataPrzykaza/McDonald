@@ -4,7 +4,7 @@ import SwiftUI
 
 
 enum ViewState {
-    case map, order, searchLocation,intro,cart, orderType
+    case map, order, searchLocation,intro,cart, orderType, summary, orderNumber
 }
 
 @Observable
@@ -16,6 +16,7 @@ class OrderViewModel{
     var navigationPath: NavigationPath
     
     var orderType: OrderType = .onPlace
+    var lastOrderNumber: Int = 0
     
     var selectedRestaurant: RestaurantLocation?
     var errorMessage: String? = nil
@@ -32,7 +33,15 @@ class OrderViewModel{
        
     }
     
-   
+    func resetOrder(){
+        order?.items.removeAll()
+        order?.sum = 0
+        order?.orderType = .onPlace
+        order?.orderNumber = 0
+        
+        orderType = .onPlace
+        
+    }
     
     func removeFromCart(menuItem: MenuItem) {
         print("Próba usunięcia przedmiotu: \(menuItem.name)")

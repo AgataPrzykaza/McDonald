@@ -8,9 +8,9 @@
 import FirebaseFirestore
 import Foundation
 enum OrderType: String, Codable {
-    case takeAway
-    case delivery
-    case onPlace
+    case takeAway = "Na wynos"
+    case delivery = "Dostawa"
+    case onPlace = "Na miejscu"
 }
 
 @Observable

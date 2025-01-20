@@ -44,8 +44,12 @@ struct OrderView: View {
                     OrderIntroView()
                 case .cart:
                     CartView()
-                    case .orderType:
+                case .orderType:
                     OrderTypeView()
+                case .summary:
+                    SummaryOrderView()
+                case .orderNumber:
+                    OrderNumberView()
                 }
             }
             

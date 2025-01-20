@@ -23,22 +23,41 @@ struct OrderTypeView: View {
                 HStack{
                     
                    
+                    Button {
+                        orderModel.orderType = .onPlace
+                        orderModel.navigationPath.append(ViewState.summary)
+                        
+                        
+                    } label: {
+                        VStack{
+                            Rectangle()
+                                .frame(height: 150)
+                            
+                            Text("Na miejscu")
+                            
+                        }
+                    }
+                    .foregroundStyle(.black)
+
 
                     
-                    VStack{
-                        Rectangle()
-                            .frame(height: 150)
+                    Button{
                         
-                        Text("Na miejscu")
+                        orderModel.orderType = .takeAway
+                        orderModel.navigationPath.append(ViewState.summary)
                         
+                        
+                    }label: {
+                        VStack{
+                            Rectangle()
+                                .frame(height: 150)
+                            
+                            Text("Na wynos")
+                        }
                     }
+                    .foregroundStyle(.black)
                     
-                    VStack{
-                        Rectangle()
-                            .frame(height: 150)
-                        
-                        Text("Na wynos")
-                    }
+                    
                     
                 }
                 .padding()

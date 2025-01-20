@@ -66,7 +66,7 @@ struct CartView: View {
                         
                         ForEach(viewModel.order!.items){ item in
                             
-                            ExtractedView( item: item)
+                            CartItem( item: item)
                             
                         }
                     }
@@ -218,7 +218,7 @@ extension CartView {
     
 }
 
-struct ExtractedView: View {
+struct CartItem: View {
     
     @Environment(OrderViewModel.self) var orderModel
     
