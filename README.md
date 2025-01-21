@@ -14,9 +14,12 @@ FastFood App is a mobile application inspired by the McDonald's official app. It
 
 - **Explore the Menu**: Browse through a variety of food categories like burgers, wraps, desserts, and drinks.
 - **Find Nearby Restaurants**: Locate McDonald's restaurants using a built-in map.
+- **Completing the Ordering Process**: Place and manage orders directly within the app for a seamless experience.
+- **Automatic Location Detection**: Automatically find the nearest restaurant based on your current location for added convenience.
 - **Collect Rewards**: Earn points and redeem them for exclusive deals.
 - **Delivery Integration**: Order through popular platforms like Uber Eats, Wolt, Glovo, or Pyszne.pl.
 - **Modern Design**: A user-friendly interface built with SwiftUI.
+
 
 ---
 
@@ -36,13 +39,8 @@ Here are some screenshots from the app:
 ## Current Work and Future Plans 🚀
 
 ### Currently Working On:
-- **Completing the Ordering Process**: Adding functionality to place and manage orders directly in the app.
-- **Preparing Data**: Filling in missing information in the database, such as menu descriptions, item details, and rewards logic to ensure a smooth user experience.
-- **Automatic Location Detection**: Enabling the app to automatically find the nearest restaurant based on your location.
-- **Improved Delivery Integration**: Enhancing connections with Uber Eats, Wolt, Glovo, and Pyszne.pl for smoother delivery experiences.
-
-### Future Features to Add:
 - **Promotion Notifications**: Receive real-time notifications about the latest deals, offers, and special promotions.
+
 
 
 
