@@ -22,6 +22,22 @@ struct SummaryOrderView: View {
             }
         }
 
+    func updatePoints(for userID: String,prize points: Int) async {
+        do {
+           
+            
+            try await PointsManager.shared.updatePoints(for: userID, points: points, historyRecord: HistoryRecord(gained: true, date: Date(), points: points))
+            
+        } catch {
+            
+            print("Error: \(error)")
+        }
+    }
+    
+    func pointsForOrder(_ price: Double) -> Int {
+        let points = Int(ceil(price / 3.0))
+        return points
+    }
     
     
     var body: some View {
@@ -110,6 +126,8 @@ struct SummaryOrderView: View {
                     orderModel.order?.customerID = mModel.user!.userId
                     
                     await processOrder()
+                    await updatePoints(for: mModel.user!.userId, prize: pointsForOrder(orderModel.order!.sum))
+                    
                     orderModel.lastOrderNumber = orderModel.order!.orderNumber
                     orderModel.resetOrder()
                     

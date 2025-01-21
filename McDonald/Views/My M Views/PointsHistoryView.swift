@@ -39,7 +39,7 @@ struct PointsHistoryView: View {
                             .bold()
                         
                         
-                        ForEach(points.history, id: \.self){ record in
+                        ForEach(points.history.reversed(), id: \.self){ record in
                             HistoryRecordView(record: record)
                             
                         }
