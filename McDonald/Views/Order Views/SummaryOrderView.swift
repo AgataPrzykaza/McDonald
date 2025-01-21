@@ -193,15 +193,17 @@ struct SummaryItem: View {
             Text(item.name)
                 .fontWeight(.heavy)
             
-            Text(String(format: "%.2f zł",item.price))
-                .bold()
-            
             if item.size != nil{
                 if let size = item.size {
                     Text("\(size.rawValue.prefix(1).uppercased())")
                         .bold()
                 }
             }
+            
+            Text(String(format: "%.2f zł",item.price))
+                .bold()
+            
+            
             
             
             Spacer()
