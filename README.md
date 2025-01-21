@@ -31,9 +31,13 @@ Here are some screenshots from the app:
 |---------------------------------------|-------------------------------------|-------------------------------------|
 | <img src="images/promocje.png" alt="Promocje Screen" width="300"/> | <img src="images/punkty.png" alt="Punkty Screen" width="300"/> | <img src="images/menu.png" alt="Menu Screen" width="300"/> |
 
-| Mapa                                  | Promo                               |
+| Mapa                                  | Promo                               |Kategoria                            |
+|---------------------------------------|-------------------------------------|-------------------------------------|
+| <img src="images/mapa.png" alt="Mapa Screen" width="300"/> | <img src="images/promo.png" alt="Promo Screen" width="300"/> | <img src="images/dodatki.png" alt="Kategoria Screen" width="300"/> |
+
+| Koszyk                                | Podsumowanie                        |
 |---------------------------------------|-------------------------------------|
-| <img src="images/mapa.png" alt="Mapa Screen" width="300"/> | <img src="images/promo.png" alt="Promo Screen" width="300"/> |
+| <img src="images/koszyk.png" alt="Koszyk Screen" width="300"/> | <img src="images/podsumowanie.png" alt="Podsumowanie Screen" width="300"/> |
 
 
 ## Current Work and Future Plans 🚀
